@@ -7,13 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3833DD6F1B6CC90C00DD811E /* KeyBoardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3833DD6E1B6CC90C00DD811E /* KeyBoardButton.swift */; };
+		3833DD711B6CC96300DD811E /* ShapeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3833DD701B6CC96300DD811E /* ShapeItem.swift */; };
+		3833DD731B6CC97600DD811E /* ColorItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3833DD721B6CC97600DD811E /* ColorItem.swift */; };
 		3840F84F1B64B83D0099A1AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3840F84E1B64B83D0099A1AE /* AppDelegate.swift */; };
 		3840F8521B64B83D0099A1AE /* KeyBoard.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3840F8501B64B83D0099A1AE /* KeyBoard.xcdatamodeld */; };
 		3840F8541B64B83D0099A1AE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3840F8531B64B83D0099A1AE /* ViewController.swift */; };
 		3840F8571B64B83D0099A1AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3840F8551B64B83D0099A1AE /* Main.storyboard */; };
-		3840F8591B64B83D0099A1AE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3840F8581B64B83D0099A1AE /* Images.xcassets */; };
 		3840F85C1B64B83D0099A1AE /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3840F85A1B64B83D0099A1AE /* LaunchScreen.xib */; };
 		3840F8681B64B83D0099A1AE /* KeyBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3840F8671B64B83D0099A1AE /* KeyBoardTests.swift */; };
+		3840F8741B64E3360099A1AE /* HomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3840F8731B64E3360099A1AE /* HomePage.swift */; };
+		3840F87C1B6509DA0099A1AE /* Property List.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3840F87B1B6509DA0099A1AE /* Property List.plist */; };
+		38BA46011B668AFA007FB00E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38BA46001B668AFA007FB00E /* Images.xcassets */; };
+		38BA46031B669707007FB00E /* UIViewControllerPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA46021B669707007FB00E /* UIViewControllerPlay.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,17 +33,23 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3833DD6E1B6CC90C00DD811E /* KeyBoardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyBoardButton.swift; sourceTree = "<group>"; };
+		3833DD701B6CC96300DD811E /* ShapeItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeItem.swift; sourceTree = "<group>"; };
+		3833DD721B6CC97600DD811E /* ColorItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorItem.swift; sourceTree = "<group>"; };
 		3840F8491B64B83D0099A1AE /* KeyBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeyBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3840F84D1B64B83D0099A1AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3840F84E1B64B83D0099A1AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3840F8511B64B83D0099A1AE /* KeyBoard.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = KeyBoard.xcdatamodel; sourceTree = "<group>"; };
 		3840F8531B64B83D0099A1AE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3840F8561B64B83D0099A1AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		3840F8581B64B83D0099A1AE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		3840F85B1B64B83D0099A1AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		3840F8611B64B83D0099A1AE /* KeyBoardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyBoardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3840F8661B64B83D0099A1AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3840F8671B64B83D0099A1AE /* KeyBoardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyBoardTests.swift; sourceTree = "<group>"; };
+		3840F8731B64E3360099A1AE /* HomePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomePage.swift; sourceTree = "<group>"; };
+		3840F87B1B6509DA0099A1AE /* Property List.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Property List.plist"; sourceTree = "<group>"; };
+		38BA46001B668AFA007FB00E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		38BA46021B669707007FB00E /* UIViewControllerPlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerPlay.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,13 +91,19 @@
 		3840F84B1B64B83D0099A1AE /* KeyBoard */ = {
 			isa = PBXGroup;
 			children = (
+				38BA46001B668AFA007FB00E /* Images.xcassets */,
+				3840F87B1B6509DA0099A1AE /* Property List.plist */,
 				3840F84E1B64B83D0099A1AE /* AppDelegate.swift */,
-				3840F8531B64B83D0099A1AE /* ViewController.swift */,
 				3840F8551B64B83D0099A1AE /* Main.storyboard */,
-				3840F8581B64B83D0099A1AE /* Images.xcassets */,
 				3840F85A1B64B83D0099A1AE /* LaunchScreen.xib */,
 				3840F8501B64B83D0099A1AE /* KeyBoard.xcdatamodeld */,
 				3840F84C1B64B83D0099A1AE /* Supporting Files */,
+				3840F8531B64B83D0099A1AE /* ViewController.swift */,
+				3840F8731B64E3360099A1AE /* HomePage.swift */,
+				38BA46021B669707007FB00E /* UIViewControllerPlay.swift */,
+				3833DD6E1B6CC90C00DD811E /* KeyBoardButton.swift */,
+				3833DD701B6CC96300DD811E /* ShapeItem.swift */,
+				3833DD721B6CC97600DD811E /* ColorItem.swift */,
 			);
 			path = KeyBoard;
 			sourceTree = "<group>";
@@ -196,8 +214,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				3840F8571B64B83D0099A1AE /* Main.storyboard in Resources */,
+				38BA46011B668AFA007FB00E /* Images.xcassets in Resources */,
 				3840F85C1B64B83D0099A1AE /* LaunchScreen.xib in Resources */,
-				3840F8591B64B83D0099A1AE /* Images.xcassets in Resources */,
+				3840F87C1B6509DA0099A1AE /* Property List.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,9 +234,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3833DD731B6CC97600DD811E /* ColorItem.swift in Sources */,
 				3840F8541B64B83D0099A1AE /* ViewController.swift in Sources */,
 				3840F8521B64B83D0099A1AE /* KeyBoard.xcdatamodeld in Sources */,
+				3833DD6F1B6CC90C00DD811E /* KeyBoardButton.swift in Sources */,
 				3840F84F1B64B83D0099A1AE /* AppDelegate.swift in Sources */,
+				3833DD711B6CC96300DD811E /* ShapeItem.swift in Sources */,
+				38BA46031B669707007FB00E /* UIViewControllerPlay.swift in Sources */,
+				3840F8741B64E3360099A1AE /* HomePage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,6 +439,7 @@
 				3840F86D1B64B83D0099A1AE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3840F86E1B64B83D0099A1AE /* Build configuration list for PBXNativeTarget "KeyBoardTests" */ = {
 			isa = XCConfigurationList;
@@ -423,6 +448,7 @@
 				3840F8701B64B83D0099A1AE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
