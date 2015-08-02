@@ -1,3 +1,4 @@
+
 //
 //  UIViewControllerPlay.swift
 //  KeyBoard
@@ -7,11 +8,11 @@
 //
 
 import UIKit
+import QuartzCore
 
 class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
     var shapeBar: UICollectionView!
     var colorBar: UICollectionView!
-    var statusBar: UIView!
     var shapeLabel: UILabel!
     var functionLabel: UILabel!
     var nameLabel: UILabel!
@@ -23,6 +24,13 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
     var widthLabel: UILabel!
     var widthSlider: UISlider!
     var colorMap : Dictionary<Int, UIColor?>?
+    var gobackButton: UIButton!
+    var positionConfigureButton: UIButton!
+    var functionConfigureButton: UIButton!
+    var customingKeyBoardButton: UIButton!
+    var OKButton: UIButton!
+    var TitleConfigureButton: UIButton!
+    var BackgroundImageConfigureButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +55,14 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         setColorBar()
         setStatusBar()
         setSizeWidget()
+        
+        setPositionConfigureButton()
+        setFunctionConfigureButton()
+        setTitleConfigureButton()
+        setBackgroundImageConfigureButton()
+        setGobackButton()
+        setOKButton()
+        setCustomingKeyBoardBuuton()
         // Do any additional setup after loading the view.
     }
 
@@ -143,7 +159,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         functionLabel.textAlignment = NSTextAlignment.Center
         functionLabel.font = UIFont(name: "", size: 20)
         functionLabel.textColor = UIColor.whiteColor()
-        functionLabel.backgroundColor = UIColor.greenColor()
+        functionLabel.backgroundColor = UIColor.grayColor()
 
         nameLabel = UILabel(
             frame: CGRect(
@@ -199,7 +215,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         marginLeft = marginLeft + totalWidth / 6
         heightLabel.textAlignment = NSTextAlignment.Center
         heightLabel.text = "height"
-        heightLabel.backgroundColor = UIColor.redColor()
+        heightLabel.backgroundColor = UIColor.grayColor()
         
         heightSlider = UISlider(
             frame: CGRect(
@@ -213,7 +229,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         heightSlider.minimumValue = 20
         heightSlider.maximumValue = 200
         heightSlider.value = 50
-        heightSlider.backgroundColor = UIColor.redColor()
+        heightSlider.backgroundColor = UIColor.grayColor()
         
         widthLabel = UILabel(
             frame: CGRect(
@@ -226,7 +242,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         marginLeft = marginLeft + totalWidth / 6
         widthLabel.textAlignment = NSTextAlignment.Center
         widthLabel.text = "width"
-        widthLabel.backgroundColor = UIColor.greenColor()
+        widthLabel.backgroundColor = UIColor.grayColor()
         
         widthSlider = UISlider(
             frame: CGRect(
@@ -239,7 +255,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         widthSlider.minimumValue = 20
         widthSlider.maximumValue = 200
         widthSlider.value = 50
-        widthSlider.backgroundColor = UIColor.greenColor()
+        widthSlider.backgroundColor = UIColor.grayColor()
         
         self.view.addSubview(heightLabel)
         self.view.addSubview(heightSlider)
@@ -248,9 +264,164 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         
     }
     
+    func setPositionConfigureButton() {
+        var marginLeft: CGFloat = self.view.frame.height - 510
+        var marginTop: CGFloat = self.view.frame.width - 60
+        var width: CGFloat = 50
+        var height: CGFloat = 50
+        var radius: CGFloat = 25
+        var image: UIImage = UIImage(named: "position")!
+        
+        positionConfigureButton = UIButton(
+            frame: CGRect(
+                x: marginLeft,
+                y: marginTop,
+                width: width,
+                height: height
+            )
+        )
+        positionConfigureButton.layer.cornerRadius = radius
+        positionConfigureButton.clipsToBounds = true
+        positionConfigureButton.backgroundColor = UIColor.grayColor()
+        positionConfigureButton.setBackgroundImage(image, forState: UIControlState.Normal)
+        self.view.addSubview(positionConfigureButton)
+    }
+    
+    func setFunctionConfigureButton() {
+        var marginLeft: CGFloat = self.view.frame.height - 430
+        var marginTop: CGFloat = self.view.frame.width - 60
+        var width: CGFloat = 50
+        var height: CGFloat = 50
+        var radius: CGFloat = 25
+        var image:UIImage = UIImage(named: "function")!
+        
+        functionConfigureButton = UIButton(
+            frame: CGRect(
+                x: marginLeft,
+                y: marginTop,
+                width: width,
+                height: height
+            )
+        )
+        functionConfigureButton.layer.cornerRadius = radius
+        functionConfigureButton.clipsToBounds = true
+        functionConfigureButton.backgroundColor = UIColor.grayColor()
+        functionConfigureButton.setBackgroundImage(image, forState: UIControlState.Normal)
+        self.view.addSubview(functionConfigureButton)
+
+    }
+    
+    func setTitleConfigureButton() {
+        var marginLeft: CGFloat = self.view.frame.height - 350
+        var marginTop: CGFloat = self.view.frame.width - 60
+        var width: CGFloat = 50
+        var height: CGFloat = 50
+        var radius: CGFloat = 25
+        
+        TitleConfigureButton = UIButton(
+            frame: CGRect(
+                x: marginLeft,
+                y: marginTop,
+                width: width,
+                height: height
+            )
+        )
+        TitleConfigureButton.layer.cornerRadius = radius
+        TitleConfigureButton.clipsToBounds = true
+        TitleConfigureButton.backgroundColor = UIColor.grayColor()
+        TitleConfigureButton.setTitle("T", forState: UIControlState.Normal)
+        self.view.addSubview(TitleConfigureButton)
+    }
+    
+    func setBackgroundImageConfigureButton() {
+        var marginLeft: CGFloat = self.view.frame.height - 270
+        var marginTop: CGFloat = self.view.frame.width - 60
+        var width: CGFloat = 50
+        var height: CGFloat = 50
+        var radius: CGFloat = 25
+        var image: UIImage = UIImage(named: "picture")!
+        
+        BackgroundImageConfigureButton = UIButton(
+            frame: CGRect(
+                x: marginLeft,
+                y: marginTop,
+                width: width,
+                height: height
+            )
+        )
+        BackgroundImageConfigureButton.layer.cornerRadius = radius
+        BackgroundImageConfigureButton.clipsToBounds = true
+        BackgroundImageConfigureButton.backgroundColor = UIColor.grayColor()
+        BackgroundImageConfigureButton.setBackgroundImage(image, forState: UIControlState.Normal)
+        self.view.addSubview(BackgroundImageConfigureButton)
+    }
+    
+    func setGobackButton() {
+        var marginLeft: CGFloat = self.view.frame.height - 190
+        var marginTop: CGFloat = self.view.frame.width - 60
+        var width: CGFloat = 50
+        var height: CGFloat = 50
+        var radius: CGFloat = 25
+        
+        gobackButton = UIButton(
+            frame: CGRect(
+                x: marginLeft,
+                y: marginTop,
+                width: width,
+                height: height
+            )
+        )
+        gobackButton.layer.cornerRadius = radius
+        gobackButton.clipsToBounds = true
+        gobackButton.backgroundColor = UIColor.grayColor()
+        gobackButton.setTitle("G", forState: UIControlState.Normal)
+        self.view.addSubview(gobackButton)
+        
+    }
+    
+    func setOKButton() {
+        var marginLeft: CGFloat = self.view.frame.height - 110
+        var marginTop: CGFloat = self.view.frame.width - 60
+        var width: CGFloat = 50
+        var height: CGFloat = 50
+        var radius: CGFloat = 25
+        
+        OKButton = UIButton(
+            frame: CGRect(
+                x: marginLeft,
+                y: marginTop,
+                width: width,
+                height: height
+            )
+        )
+        OKButton.layer.cornerRadius = radius
+        OKButton.clipsToBounds = true
+        OKButton.backgroundColor = UIColor.grayColor()
+        OKButton.setTitle("OK", forState: UIControlState.Normal)
+        self.view.addSubview(OKButton)
+    }
+    
+    func setCustomingKeyBoardBuuton() {
+        var center: CGPoint = CGPoint(
+            x: (self.view.frame.height - 120) / 2,
+            y: (self.view.frame.width - 120) / 2
+        )
+        customingKeyBoardButton = UIButton(
+            frame: CGRect(
+                x: center.x,
+                y: center.y,
+                width: 100,
+                height: 100
+            )
+        )
+        customingKeyBoardButton.backgroundColor = UIColor.grayColor()
+        customingKeyBoardButton.setTitle("custom", forState: UIControlState.Normal)
+        self.view.addSubview(customingKeyBoardButton)
+    }
+    
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView === shapeBar {
-            return 7
+            return 10
         } else {
             return 9
         }
@@ -262,13 +433,13 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
 //            cell.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
             var content: ShapeItem = ShapeItem(
                 frame:CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height),
-                viewShape: 1
+                viewShape: indexPath.row
             )
             cell.contentView.addSubview(content)
             return cell
         } else {
             let cell = colorBar.dequeueReusableCellWithReuseIdentifier("colorBar", forIndexPath: indexPath) as! UICollectionViewCell
-            cell.backgroundColor = colorMap![((indexPath.row  % 2 + 5) % 10)]!
+            cell.backgroundColor = colorMap![(indexPath.row % 10)]!
             return cell
         }
     }
