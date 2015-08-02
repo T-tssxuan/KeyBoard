@@ -110,8 +110,8 @@ class HomePage:NSObject {
         label.textAlignment = NSTextAlignment.Center
         contentView.addSubview(label)
         return contentView
-        
     }
+    
 
 
 }

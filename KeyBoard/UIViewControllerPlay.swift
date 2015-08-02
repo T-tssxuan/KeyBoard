@@ -68,8 +68,8 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         var marginTop: CGFloat = 30
         var width:CGFloat = 70
         var height:CGFloat = self.view.frame.width
-        var itemSize: CGSize = CGSize(width: 68, height: 68)
-        var itemEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+        var itemSize: CGSize = CGSize(width: 70, height: 70)
+        var itemEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
         var layout = UICollectionViewFlowLayout()
         layout.itemSize = itemSize
@@ -78,7 +78,8 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         layout.sectionInset = itemEdgeInsets
         shapeBar = UICollectionView(
             frame: CGRect(x: marginLeft, y: marginTop, width: width, height: height),
-            collectionViewLayout: layout)
+            collectionViewLayout: layout
+        )
         shapeBar.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "shapeBar")
         shapeBar.dataSource = self
         self.view.addSubview(shapeBar)
@@ -99,7 +100,8 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         layout.sectionInset = itemEdgeInsets
         colorBar = UICollectionView(
             frame: CGRect(x: marginLeft, y: marginTop, width: width, height: height),
-            collectionViewLayout: layout)
+            collectionViewLayout: layout
+        )
         colorBar.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "colorBar")
         colorBar.dataSource = self
         self.view.addSubview(colorBar)
@@ -186,26 +188,54 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         var betweenGap: CGFloat = 5
         var totalWidth = self.view.frame.height - marginLeft - marginRight - betweenGap
         
-        heightLabel = UILabel(frame: CGRect(x: marginLeft, y: marginTop, width: totalWidth / 6, height: height))
+        heightLabel = UILabel(
+            frame: CGRect(
+                x: marginLeft,
+                y: marginTop,
+                width: totalWidth / 6,
+                height: height
+            )
+        )
         marginLeft = marginLeft + totalWidth / 6
         heightLabel.textAlignment = NSTextAlignment.Center
         heightLabel.text = "height"
         heightLabel.backgroundColor = UIColor.redColor()
         
-        heightSlider = UISlider(frame: CGRect(x: marginLeft, y: marginTop, width: totalWidth * 2 / 6, height: height))
+        heightSlider = UISlider(
+            frame: CGRect(
+                x: marginLeft,
+                y: marginTop,
+                width: totalWidth * 2 / 6,
+                height: height
+            )
+        )
         marginLeft = marginLeft + totalWidth * 2 / 6 + 5
         heightSlider.minimumValue = 20
         heightSlider.maximumValue = 200
         heightSlider.value = 50
         heightSlider.backgroundColor = UIColor.redColor()
         
-        widthLabel = UILabel(frame: CGRect(x: marginLeft, y: marginTop, width: totalWidth / 6, height: height))
+        widthLabel = UILabel(
+            frame: CGRect(
+                x: marginLeft,
+                y: marginTop,
+                width: totalWidth / 6,
+                height: height
+            )
+        )
         marginLeft = marginLeft + totalWidth / 6
         widthLabel.textAlignment = NSTextAlignment.Center
         widthLabel.text = "width"
         widthLabel.backgroundColor = UIColor.greenColor()
         
-        widthSlider = UISlider(frame: CGRect(x: marginLeft, y: marginTop, width: totalWidth * 2 / 6, height: height))
+        widthSlider = UISlider(
+            frame: CGRect(
+                x: marginLeft,
+                y: marginTop,
+                width: totalWidth * 2 / 6,
+                height: height
+            )
+        )
         widthSlider.minimumValue = 20
         widthSlider.maximumValue = 200
         widthSlider.value = 50
@@ -229,7 +259,12 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         if collectionView === shapeBar {
             let cell = shapeBar.dequeueReusableCellWithReuseIdentifier("shapeBar", forIndexPath: indexPath) as! UICollectionViewCell
-            cell.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+//            cell.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+            var content: ShapeItem = ShapeItem(
+                frame:CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height),
+                viewShape: 1
+            )
+            cell.contentView.addSubview(content)
             return cell
         } else {
             let cell = colorBar.dequeueReusableCellWithReuseIdentifier("colorBar", forIndexPath: indexPath) as! UICollectionViewCell
