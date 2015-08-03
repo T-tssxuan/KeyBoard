@@ -17,9 +17,36 @@ enum ShapeCategory: Int{
     case RightTrangle = 5
     case Circle = 6
     case Heart = 7
+    static var count: Int { return Heart.hashValue + 1}
 }
 
 class Shape: NSObject {
+    
+    static func getPath(#shapeCategory: ShapeCategory, frame rect: CGRect) -> CGPathRef {
+        var shapePath: CGPathRef
+        switch shapeCategory {
+        case .RoundedRect:
+            shapePath = makeRoundedRectPath(rect: rect)
+        case .Rect:
+            shapePath = makeRectPath(rect: rect)
+        case .UpTrangle:
+            shapePath = makeUpTranglePath(rect: rect)
+        case .LeftTrangle:
+            shapePath = makeLeftTranglePath(rect: rect)
+        case .DownTrangle:
+            shapePath = makeDownTranglePath(rect: rect)
+        case .RightTrangle:
+            shapePath = makeRightTranglePath(rect: rect)
+        case .Circle:
+            shapePath = makeCirclePath(rect: rect)
+        case .Heart:
+            shapePath = makeHeartPath(rect: rect)
+        default:
+            shapePath = makeRoundedRectPath(rect: rect)
+        }
+        return shapePath
+    }
+    
     static func makeRoundedRectPath(#rect: CGRect) -> CGMutablePathRef {
         var path: CGMutablePathRef = CGPathCreateMutable()
         var transform: CGAffineTransform = CGAffineTransform(

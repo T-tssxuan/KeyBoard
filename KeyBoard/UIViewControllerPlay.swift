@@ -27,10 +27,11 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
     var gobackButton: UIButton!
     var positionConfigureButton: UIButton!
     var functionConfigureButton: UIButton!
-    var customingKeyBoardButton: UIButton!
     var OKButton: UIButton!
     var TitleConfigureButton: UIButton!
     var BackgroundImageConfigureButton: UIButton!
+    
+    var customingKeyBoardButton: KeyBoardButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -317,6 +318,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         var width: CGFloat = 50
         var height: CGFloat = 50
         var radius: CGFloat = 25
+        var image: UIImage = UIImage(named: "title")!
         
         TitleConfigureButton = UIButton(
             frame: CGRect(
@@ -329,7 +331,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         TitleConfigureButton.layer.cornerRadius = radius
         TitleConfigureButton.clipsToBounds = true
         TitleConfigureButton.backgroundColor = UIColor.grayColor()
-        TitleConfigureButton.setTitle("T", forState: UIControlState.Normal)
+        TitleConfigureButton.setBackgroundImage(image, forState: UIControlState.Normal)
         self.view.addSubview(TitleConfigureButton)
     }
     
@@ -362,6 +364,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         var width: CGFloat = 50
         var height: CGFloat = 50
         var radius: CGFloat = 25
+        var image: UIImage = UIImage(named: "back")!
         
         gobackButton = UIButton(
             frame: CGRect(
@@ -374,7 +377,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         gobackButton.layer.cornerRadius = radius
         gobackButton.clipsToBounds = true
         gobackButton.backgroundColor = UIColor.grayColor()
-        gobackButton.setTitle("G", forState: UIControlState.Normal)
+        gobackButton.setBackgroundImage(image, forState: UIControlState.Normal)
         self.view.addSubview(gobackButton)
         
     }
@@ -385,6 +388,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         var width: CGFloat = 50
         var height: CGFloat = 50
         var radius: CGFloat = 25
+        var image: UIImage = UIImage(named: "ok")!
         
         OKButton = UIButton(
             frame: CGRect(
@@ -397,7 +401,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         OKButton.layer.cornerRadius = radius
         OKButton.clipsToBounds = true
         OKButton.backgroundColor = UIColor.grayColor()
-        OKButton.setTitle("OK", forState: UIControlState.Normal)
+        OKButton.setBackgroundImage(image, forState: UIControlState.Normal)
         self.view.addSubview(OKButton)
     }
     
@@ -406,7 +410,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
             x: (self.view.frame.height - 120) / 2,
             y: (self.view.frame.width - 120) / 2
         )
-        customingKeyBoardButton = UIButton(
+        customingKeyBoardButton = KeyBoardButton(
             frame: CGRect(
                 x: center.x,
                 y: center.y,
@@ -414,8 +418,9 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
                 height: 100
             )
         )
-        customingKeyBoardButton.backgroundColor = UIColor.grayColor()
-        customingKeyBoardButton.setTitle("custom", forState: UIControlState.Normal)
+//        customingKeyBoardButton.backgroundColor = UIColor.grayColor()
+//        customingKeyBoardButton.setNeedsDisplay()
+//        customingKeyBoardButton.setTitle("custom", forState: UIControlState.Normal)
         self.view.addSubview(customingKeyBoardButton)
     }
     
