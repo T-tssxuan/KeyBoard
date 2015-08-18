@@ -18,6 +18,9 @@ enum ShapeCategory: Int{
     case Circle = 6
     case Heart = 7
     static var count: Int { return Heart.hashValue + 1}
+    static func getCategory(#index: Int) -> ShapeCategory{
+        return ShapeCategory(rawValue: index % (Heart.hashValue + 1))!
+    }
 }
 
 class Shape: NSObject {
@@ -57,14 +60,15 @@ class Shape: NSObject {
             tx: 0.2 * rect.width,
             ty: 0.2 * rect.width
         )
-        CGPathAddRoundedRect(path, nil, rect,  5, 5)
+        CGPathAddRoundedRect(path, nil, CGRect(x: 0, y: 0, width: rect.width, height: rect.height),  5, 5)
         
         return path
     }
     
     static func makeRectPath(#rect: CGRect) -> CGMutablePathRef {
         var path: CGMutablePathRef = CGPathCreateMutable()
-        CGPathAddRect(path, nil, rect)
+        CGPathAddRect(path, nil, CGRect(x: 0, y: 0, width: rect.width, height: rect.height))
+        println("make rect \(rect)")
         return path
     }
     
@@ -113,36 +117,45 @@ class Shape: NSObject {
     static func makeHeartPath(#rect: CGRect) -> CGMutablePathRef {
         var path: CGMutablePathRef = CGPathCreateMutable()
         var heartPath: CGMutablePathRef = CGPathCreateMutable()
-        var heartSize: CGRect = CGRect(x: 0, y: 0, width: 150, height: 150)
-        var transform: CGAffineTransform = CGAffineTransform(
-            a: -rect.width / heartSize.width,
+        var heartSize: CGRect = CGRect(x: 0, y: 0, width: 120, height: 120)
+        var transformPos: CGAffineTransform = CGAffineTransform(
+            a: rect.width / 120,
             b: 0,
             c: 0,
-            d: -rect.height / heartSize.width,
-            tx: 35,
-            ty: 27
+            d: -rect.height / 120,
+            tx: 0,
+            ty: 35
         )
         
-        CGPathMoveToPoint(heartPath, nil, 0, 21)
-        CGPathAddCurveToPoint(heartPath, nil, -16, 49.8, -53.2, 41.0, -49.6, 5.8)
-        CGPathAddCurveToPoint(heartPath, nil, -46, -29.4, -9.4, -53.4, 0, -69.8)
-        CGPathAddCurveToPoint(heartPath, nil, 9.4, -53.4, 46, -29.4, 49.6, 5.8)
-        CGPathAddCurveToPoint(heartPath, nil, 53.2, 41, 16, 49.8, 0, 21)
+        var transformSize: CGAffineTransform = CGAffineTransform(
+            a: rect.width / heartSize.width,
+            b: 0,
+            c: 0,
+            d: rect.height / heartSize.width,
+            tx: 0,
+            ty: 0
+        )
+
+        
+//        CGPathMoveToPoint(heartPath, nil, 0, 21)
+//        CGPathAddCurveToPoint(heartPath, nil, -16, 49.8, -53.2, 41.0, -49.6, 5.8)
+//        CGPathAddCurveToPoint(heartPath, nil, -46, -29.4, -9.4, -53.4, 0, -69.8)
+//        CGPathAddCurveToPoint(heartPath, nil, 9.4, -53.4, 46, -29.4, 49.6, 5.8)
+//        CGPathAddCurveToPoint(heartPath, nil, 53.2, 41, 16, 49.8, 0, 21)
+//        CGPathCloseSubpath(heartPath)
+        
+        
+        CGPathMoveToPoint(heartPath, nil, 50, 21)
+        CGPathAddCurveToPoint(heartPath, nil, 34, 49.8, -3.2, 41.0, 0.4, 5.8)
+        CGPathAddCurveToPoint(heartPath, nil, 4, -29.4, 40.6, -53.4, 50, -69.8)
+        CGPathAddCurveToPoint(heartPath, nil, 59.4, -53.4, 96, -29.4, 99.6, 5.8)
+        CGPathAddCurveToPoint(heartPath, nil, 103.2, 41, 66, 49.8, 50, 21)
         CGPathCloseSubpath(heartPath)
+
+        CGPathAddPath(path, &transformPos, heartPath)
         
-        //        CGPathAddCurveToPoint(heartPath, nil, 75,37,70,25,50,25)
-        //
-        //        CGPathAddCurveToPoint(heartPath, nil, 75,37,70,25,50,25);
-        //        CGPathAddCurveToPoint(heartPath, nil, 20,25,20,62.5,20,62.5);
-        //
-        //        CGPathAddCurveToPoint(heartPath, nil, 20,80,40,102,75,120);
-        //        CGPathAddCurveToPoint(heartPath, nil, 110,102,130,80,130,62.5);
-        //
-        //        CGPathAddCurveToPoint(heartPath, nil, 130,62.5,130,25,100,25);
-        //        CGPathAddCurveToPoint(heartPath, nil, 85,25,75,37,75,40);
-        //        CGPathCloseSubpath(heartPath)
+        var temp: CGMutablePathRef = CGPathCreateMutable()
         
-        CGPathAddPath(path, &transform, heartPath)
         return path
     }
 }

@@ -12,23 +12,11 @@ import Foundation
 class HomePage:NSObject {
 
     var homeCollectionView: UICollectionView!
-    var colorMap : Dictionary<Int, UIColor?>?
+    var homeInfo: JSON = InfoManager.getHomeSetting()
     
     override init(){
         super.init()
         let layout = UICollectionViewFlowLayout()
-        colorMap = [
-            0: UIColor(red: 30 / 256, green: 158 / 256, blue: 73 / 256, alpha: 1),
-            1: UIColor(red: 240 / 256, green: 87 / 256, blue: 30 / 256, alpha: 1),
-            2: UIColor(red: 53 / 256, green: 53 / 256, blue: 53 / 256, alpha: 1),
-            3: UIColor(red: 247 / 256, green: 227 / 256, blue: 87 / 256, alpha: 1),
-            4: UIColor(red: 172 / 256, green: 97 / 256, blue: 230 / 256, alpha: 1),
-            5: UIColor(red: 69 / 256, green: 190 / 256, blue: 200 / 256, alpha: 1),
-            6: UIColor(red: 241 / 256, green: 107 / 256, blue: 105 / 256, alpha: 1),
-            7: UIColor(red: 174 / 256, green: 188 / 256, blue: 184 / 256, alpha: 1),
-            8: UIColor(red: 233 / 256, green: 231 / 256, blue: 231 / 256, alpha: 1),
-            9: UIColor(red: 40 / 256, green: 165 / 256, blue: 207 / 256, alpha: 1)
-        ]
         switch UIDevice.currentDevice().orientation {
         case UIDeviceOrientation.Portrait, UIDeviceOrientation.PortraitUpsideDown, UIDeviceOrientation.Unknown:
             layout.itemSize = CGSize(
@@ -58,7 +46,7 @@ class HomePage:NSObject {
         
     func getCellAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = homeCollectionView.dequeueReusableCellWithReuseIdentifier("HomePageCell", forIndexPath: indexPath) as! UICollectionViewCell
-        cell.backgroundColor = colorMap![(indexPath.row % 10)]!
+        cell.backgroundColor = ColorItem.getColor(index: indexPath.row)
         cell.contentView.addSubview(getCellContentViewAtIndexPath(
             cellIndexPath: indexPath,
             cellSize: CGSize(width: cell.frame.width, height: cell.frame.height))
@@ -96,6 +84,16 @@ class HomePage:NSObject {
             imageName = "Add"
             textContent = "Add New"
         }
+        println("homeinfo : \(indexPath.row)")
+        if (indexPath.row != homeInfo.count - 1) {
+//            println("homeinfo : \(indexPath.row)")
+            imageName = homeInfo[indexPath.row + 1]["image"].string!
+            textContent = homeInfo[indexPath.row + 1]["title"].string!
+        } else {
+            imageName = homeInfo[0]["image"].string!
+            textContent = homeInfo[0]["title"].string!
+        }
+        
         image = UIImage(named: imageName)!
         imageView = UIImageView(image: image)
         var rate:CGFloat = 3 / 7

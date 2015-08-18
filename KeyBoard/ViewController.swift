@@ -13,15 +13,20 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     var home: HomePage?
     var collectionView: UICollectionView!
+    var appInfo: [String: AnyObject]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(setStatusBarBackgroundView())
+        InfoManager.setItems()
+        InfoManager.getItems()
+        InfoManager.setItems()
         home =  HomePage()
         collectionView = home!.getHomeView()
         collectionView.delegate = self
         collectionView.dataSource = self
         view.addSubview(collectionView)
+//        InfoManager.appInfoInit()
     }
 
     override func didReceiveMemoryWarning() {
@@ -59,16 +64,23 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10;
+//        return 10;
+        return InfoManager.getHomeSetting().count
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        var page = UIViewControllerPlay()
-        
+        if indexPath.row != InfoManager.getHomeSetting().count - 1 && indexPath.row != 0{
+            let item: JSON = InfoManager.getHomeItemInformation(index: indexPath.row + 1)
+            let pageTitle: String = item["title"].stringValue
+            println("subpage info: \(pageTitle)")
+            let pageInfo = InfoManager.getSubpageInformation(pageName: pageTitle)
+            self.presentViewController(UIViewControllerPlay(pageInfo: pageInfo), animated: true, completion: nil)
+        }
+        println("the deselect index is: \(indexPath.row)")
     }
     
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
-        self.presentViewController(UIViewControllerPlay(), animated: true, completion: nil)
+        println("the select index is: \(indexPath.row)")
     }
 }
 

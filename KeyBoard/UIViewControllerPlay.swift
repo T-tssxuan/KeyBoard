@@ -10,7 +10,7 @@
 import UIKit
 import QuartzCore
 
-class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
+class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     var shapeBar: UICollectionView!
     var colorBar: UICollectionView!
     var shapeLabel: UILabel!
@@ -23,35 +23,63 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
     var heightSlider: UISlider!
     var widthLabel: UILabel!
     var widthSlider: UISlider!
-    var colorMap : Dictionary<Int, UIColor?>?
     var gobackButton: UIButton!
     var positionConfigureButton: UIButton!
     var functionConfigureButton: UIButton!
+    var functionAlertController: UIAlertController!
     var OKButton: UIButton!
     var TitleConfigureButton: UIButton!
+    var titleAlertController: UIAlertController!
     var BackgroundImageConfigureButton: UIButton!
     
     var customingKeyBoardButton: KeyBoardButton!
+    
+    var editCover: UIView!
+    
+    var configureHidden: Bool = false
+    
+    var pageInformation: JSON!
+    
+    var orientation: Int? = 0
+    var backgroundColor: UIColor? = UIColor.whiteColor()
+    var keys: JSON?
+
+    
+    init(pageInfo: JSON) {
+        orientation = pageInfo["orientation"].int
+        println("the pageinfo: \(pageInfo)")
+        keys = pageInfo["keys"]
+        backgroundColor = UIColor(
+            red: CGFloat(pageInfo["backgroundcolor"][0].floatValue),
+            green: CGFloat(pageInfo["backgroundcolor"][1].floatValue),
+            blue: CGFloat(pageInfo["backgroundcolor"][2].floatValue),
+            alpha: CGFloat(pageInfo["backgroundcolor"][3].floatValue)
+        )
+        println("before super")
+        super.init(nibName: nil, bundle: nil)
+        println("after super")
+    }
+ 
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-        colorMap = [
-            0: UIColor(red: 30 / 256, green: 158 / 256, blue: 73 / 256, alpha: 1),
-            1: UIColor(red: 240 / 256, green: 87 / 256, blue: 30 / 256, alpha: 1),
-            2: UIColor(red: 53 / 256, green: 53 / 256, blue: 53 / 256, alpha: 1),
-            3: UIColor(red: 247 / 256, green: 227 / 256, blue: 87 / 256, alpha: 1),
-            4: UIColor(red: 172 / 256, green: 97 / 256, blue: 230 / 256, alpha: 1),
-            5: UIColor(red: 69 / 256, green: 190 / 256, blue: 200 / 256, alpha: 1),
-            6: UIColor(red: 241 / 256, green: 107 / 256, blue: 105 / 256, alpha: 1),
-            7: UIColor(red: 174 / 256, green: 188 / 256, blue: 184 / 256, alpha: 1),
-            8: UIColor(red: 233 / 256, green: 231 / 256, blue: 231 / 256, alpha: 1),
-            9: UIColor(red: 40 / 256, green: 165 / 256, blue: 207 / 256, alpha: 1)
-        ]
-        view.backgroundColor = UIColor.whiteColor()
-        
         var tap = UITapGestureRecognizer(target: self, action: "handleTap:")
         tap.numberOfTapsRequired = 2
         view.addGestureRecognizer(tap)
+        view.backgroundColor = backgroundColor
+        loadKeyBoardButtons()
+        
+        println("view frame \(view.frame)")
+        
+        editCover = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.height, height: view.frame.width))
+        
+        editCover.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7)
+        view.addSubview(editCover)
+        
+        var menu = Menu(spuerView: view)
+        
         setShapeBar()
         setColorBar()
         setStatusBar()
@@ -64,6 +92,11 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         setGobackButton()
         setOKButton()
         setCustomingKeyBoardBuuton()
+        
+        playMode()
+        
+        println("int didload")
+        
         // Do any additional setup after loading the view.
     }
 
@@ -73,11 +106,47 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
     }
     
     func handleTap(sender: UITapGestureRecognizer) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        if configureHidden {
+            editMode()
+        }
+        
+        println("configureHidden \(configureHidden)")
     }
-
+    
     override func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation {
-        return UIInterfaceOrientation.LandscapeLeft
+        println("in orient")
+        if (orientation == 0) {
+            return UIInterfaceOrientation.LandscapeLeft
+        } else {
+            return UIInterfaceOrientation.Portrait
+        }
+    }
+    
+    func loadKeyBoardButtons() {
+        println("\(keys)")
+        for (index: String, subJson: JSON) in keys! {
+            println("a button")
+            var key: KeyBoardButton = KeyBoardButton()
+            key.shapeCategory =  ShapeCategory.getCategory(index: subJson["shape"].intValue)
+            key.buttonBackgroundColor = ColorItem.getCGColor(index: subJson["color"].intValue)
+            key.frame = CGRect(
+                x: subJson["x"].intValue,
+                y: subJson["y"].intValue,
+                width: subJson["width"].intValue,
+                height: subJson["height"].intValue
+            )
+            key.buttonTitle = subJson["title"].stringValue
+            key.buttonFunction = subJson["function"].stringValue
+            self.view.addSubview(key)
+        }
+    }
+    
+    func setMenu() {
+        var pageMenu: UIButton!
+        var pageDismissButton: UIButton!
+        var pageAddButon: UIButton!
+        var pageEditButton: UIButton!
+        
     }
     
     func setShapeBar() {
@@ -99,6 +168,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         )
         shapeBar.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "shapeBar")
         shapeBar.dataSource = self
+        shapeBar.delegate = self
         self.view.addSubview(shapeBar)
     }
     
@@ -121,6 +191,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         )
         colorBar.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "colorBar")
         colorBar.dataSource = self
+        colorBar.delegate = self
         self.view.addSubview(colorBar)
     }
     
@@ -229,8 +300,10 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         marginLeft = marginLeft + totalWidth * 2 / 6 + 5
         heightSlider.minimumValue = 20
         heightSlider.maximumValue = 200
-        heightSlider.value = 50
+        heightSlider.value = 100
         heightSlider.backgroundColor = UIColor.grayColor()
+        
+        heightSlider.addTarget(self, action: "customButtonSizeChange:", forControlEvents: UIControlEvents.ValueChanged)
         
         widthLabel = UILabel(
             frame: CGRect(
@@ -255,8 +328,10 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         )
         widthSlider.minimumValue = 20
         widthSlider.maximumValue = 200
-        widthSlider.value = 50
+        widthSlider.value = 100
         widthSlider.backgroundColor = UIColor.grayColor()
+        
+        widthSlider.addTarget(self, action: "customButtonSizeChange:", forControlEvents: UIControlEvents.ValueChanged)
         
         self.view.addSubview(heightLabel)
         self.view.addSubview(heightSlider)
@@ -285,6 +360,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         positionConfigureButton.clipsToBounds = true
         positionConfigureButton.backgroundColor = UIColor.grayColor()
         positionConfigureButton.setBackgroundImage(image, forState: UIControlState.Normal)
+        positionConfigureButton.addTarget(self, action: "clickPosition:", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(positionConfigureButton)
     }
     
@@ -308,7 +384,40 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         functionConfigureButton.clipsToBounds = true
         functionConfigureButton.backgroundColor = UIColor.grayColor()
         functionConfigureButton.setBackgroundImage(image, forState: UIControlState.Normal)
+        functionConfigureButton.addTarget(self, action: "clickFunction:", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(functionConfigureButton)
+        
+        functionAlertController = UIAlertController(
+            title: "Set Function",
+            message: "set the function of the button with the format \"key1,key2,key3\"",
+            preferredStyle: UIAlertControllerStyle.Alert
+        )
+        
+        functionAlertController.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
+            textField.placeholder = "function"
+        }
+        
+        let confirmAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (paramAction: UIAlertAction!) in
+            if let textFields = self.functionAlertController?.textFields {
+                let theTextField = textFields as! [UITextField]
+                var temp: String! = theTextField[0].text as String
+                if let match = temp.rangeOfString( "^([^,]+\\,(.+\\,)*){0,1}[^,]+$", options: NSStringCompareOptions.RegularExpressionSearch){
+                    self.customingKeyBoardButton.buttonFunction = theTextField[0].text
+                    self.functionLabel.text = temp.stringByReplacingOccurrencesOfString(",", withString: " + ")
+                } else {
+                    println("error format")
+                    theTextField[0].text = ""
+                }
+                
+            }
+            
+            println("set function \(self.customingKeyBoardButton.buttonFunction)")
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Destructive, handler: nil)
+        
+        functionAlertController.addAction(confirmAction)
+        functionAlertController.addAction(cancelAction)
 
     }
     
@@ -332,7 +441,31 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         TitleConfigureButton.clipsToBounds = true
         TitleConfigureButton.backgroundColor = UIColor.grayColor()
         TitleConfigureButton.setBackgroundImage(image, forState: UIControlState.Normal)
+        TitleConfigureButton.addTarget(self, action: "clickTitle:", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(TitleConfigureButton)
+        titleAlertController = UIAlertController(
+            title: "Set Title",
+            message: "set the title of the button no more than two words",
+            preferredStyle: UIAlertControllerStyle.Alert
+        )
+        
+        titleAlertController.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
+            textField.placeholder = "button title"
+        }
+        let confirmAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (paramAction: UIAlertAction!) in
+            if let textFields = self.titleAlertController?.textFields {
+                let theTextField = textFields as! [UITextField]
+                self.customingKeyBoardButton.buttonTitle = theTextField[0].text
+            }
+            
+            println("set function \(self.customingKeyBoardButton.buttonTitle)")
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Destructive, handler: nil )
+        
+        titleAlertController.addAction(confirmAction)
+        titleAlertController.addAction(cancelAction)
+
     }
     
     func setBackgroundImageConfigureButton() {
@@ -355,6 +488,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         BackgroundImageConfigureButton.clipsToBounds = true
         BackgroundImageConfigureButton.backgroundColor = UIColor.grayColor()
         BackgroundImageConfigureButton.setBackgroundImage(image, forState: UIControlState.Normal)
+        BackgroundImageConfigureButton.addTarget(self, action: "clickImage:", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(BackgroundImageConfigureButton)
     }
     
@@ -378,8 +512,8 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         gobackButton.clipsToBounds = true
         gobackButton.backgroundColor = UIColor.grayColor()
         gobackButton.setBackgroundImage(image, forState: UIControlState.Normal)
+        gobackButton.addTarget(self, action: "clickBack:", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(gobackButton)
-        
     }
     
     func setOKButton() {
@@ -402,14 +536,17 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
         OKButton.clipsToBounds = true
         OKButton.backgroundColor = UIColor.grayColor()
         OKButton.setBackgroundImage(image, forState: UIControlState.Normal)
+        OKButton.addTarget(self, action: "clickOk:", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(OKButton)
     }
     
     func setCustomingKeyBoardBuuton() {
         var center: CGPoint = CGPoint(
-            x: (self.view.frame.height - 120) / 2,
-            y: (self.view.frame.width - 120) / 2
+            x: (self.view.frame.height - 120) / 2 + 20,
+            y: (self.view.frame.width - 125) / 2 + 15
         )
+        var image: UIImage = UIImage(named: "book")!
+        
         customingKeyBoardButton = KeyBoardButton(
             frame: CGRect(
                 x: center.x,
@@ -418,9 +555,9 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
                 height: 100
             )
         )
-//        customingKeyBoardButton.backgroundColor = UIColor.grayColor()
-//        customingKeyBoardButton.setNeedsDisplay()
-//        customingKeyBoardButton.setTitle("custom", forState: UIControlState.Normal)
+        
+        customingKeyBoardButton.shapeCategory = ShapeCategory.Heart
+        customingKeyBoardButton.buttonBackgroundImage = image.CGImage
         self.view.addSubview(customingKeyBoardButton)
     }
     
@@ -444,10 +581,131 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource {
             return cell
         } else {
             let cell = colorBar.dequeueReusableCellWithReuseIdentifier("colorBar", forIndexPath: indexPath) as! UICollectionViewCell
-            cell.backgroundColor = colorMap![(indexPath.row % 10)]!
+            cell.backgroundColor = ColorItem.getColor(index: indexPath.row)
             return cell
         }
     }
     
+    func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+        println("high light \(indexPath.row)")
+        return true
+    }
+    
+    func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+        println("select item \(indexPath.row)")
+        return true
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        if collectionView === shapeBar {
+            customingKeyBoardButton.shapeCategory = ShapeCategory(rawValue: indexPath.row % ShapeCategory.count)
+            println("shape bar click")
+        } else if collectionView === colorBar {
+            let color: UIColor = ColorItem.getColor(index: indexPath.row)
+            customingKeyBoardButton.buttonBackgroundColor = color.CGColor
+            println("color bar click")
+        }
+    }
+    
+    func customButtonSizeChange(slider: UISlider) {
+        let center: CGPoint = CGPoint(
+            x: (self.view.frame.width - 120) / 2 + 70,
+            y: (self.view.frame.height - 125) / 2 + 65
+        )
+        
+        println("this view frame \(view.frame)")
+        
+        let x: CGFloat = center.x - CGFloat(widthSlider.value / 2)
+        let y: CGFloat = center.y - CGFloat(heightSlider.value / 2)
+        let width: CGFloat = CGFloat(widthSlider.value)
+        let height: CGFloat = CGFloat(heightSlider.value)
+        
+//        keyInformation["width"].float = Float(width)
+//        keyInformation["height"].float = Float(height)
+        
+        customingKeyBoardButton.frame = CGRect(x: x, y: y, width: width, height: height)
+    }
+    
+    func clickBack(button: UIButton) {
+//        self.dismissViewControllerAnimated(true, completion: nil)
+        playMode()
+    }
+    
+    func clickOk(button: UIButton) {
+        println("\(nameLabel.text)")
+//        pageInformation[nameLabel.text!] = keyInformation
+        println("the page info: \(pageInformation)")
+//        self.dismissViewControllerAnimated(true, completion: nil)
+        playMode()
+    }
+    
+    func clickFunction(button: UIButton) {
+        self.presentViewController(functionAlertController, animated: true, completion: nil)
+    }
+    
+    func clickImage(button: UIButton) {
+        
+    }
+    
+    func clickTitle(button: UIButton) {
+        self.presentViewController(titleAlertController, animated: true, completion: nil)
+    }
+    
+    func clickPosition(button: UIButton) {
+        hiddenAllConfigureItem()
+    }
+    
+    func playMode() {
+        hiddenAllConfigureItem()
+        customingKeyBoardButton.hidden = true
+        editCover.hidden = true
+    }
+    
+    func editMode() {
+        showAllConfigureItem()
+        customingKeyBoardButton.hidden = false
+        editCover.hidden = false
+    }
+    
+    func hiddenAllConfigureItem() {
+        configureHidden = true
+        shapeBar.hidden = true
+        colorBar.hidden = true
+        shapeLabel.hidden = true
+        functionLabel.hidden = true
+        nameLabel.hidden = true
+        colorLabel.hidden = true
+        heightLabel.hidden = true
+        heightSlider.hidden = true
+        widthLabel.hidden = true
+        widthSlider.hidden = true
+        gobackButton.hidden = true
+        positionConfigureButton.hidden = true
+        functionConfigureButton.hidden = true
+        OKButton.hidden = true
+        TitleConfigureButton.hidden = true
+        BackgroundImageConfigureButton.hidden = true
+    }
+    
+    func showAllConfigureItem() {
+        configureHidden = false
+        shapeBar.hidden = false
+        colorBar.hidden = false
+        shapeLabel.hidden = false
+        functionLabel.hidden = false
+        nameLabel.hidden = false
+        colorLabel.hidden = false
+        heightLabel.hidden = false
+        heightSlider.hidden = false
+        widthLabel.hidden = false
+        widthSlider.hidden = false
+        gobackButton.hidden = false
+        positionConfigureButton.hidden = false
+        functionConfigureButton.hidden = false
+        OKButton.hidden = false
+        TitleConfigureButton.hidden = false
+        BackgroundImageConfigureButton.hidden = false
+    }
+
 }
 

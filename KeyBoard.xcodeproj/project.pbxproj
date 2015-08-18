@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3820D1A41B8397A0003E2AD1 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3820D1A31B8397A0003E2AD1 /* Menu.swift */; };
 		3833DD6F1B6CC90C00DD811E /* KeyBoardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3833DD6E1B6CC90C00DD811E /* KeyBoardButton.swift */; };
 		3833DD711B6CC96300DD811E /* ShapeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3833DD701B6CC96300DD811E /* ShapeItem.swift */; };
 		3833DD731B6CC97600DD811E /* ColorItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3833DD721B6CC97600DD811E /* ColorItem.swift */; };
@@ -18,10 +19,16 @@
 		3840F8681B64B83D0099A1AE /* KeyBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3840F8671B64B83D0099A1AE /* KeyBoardTests.swift */; };
 		3840F8741B64E3360099A1AE /* HomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3840F8731B64E3360099A1AE /* HomePage.swift */; };
 		3840F87C1B6509DA0099A1AE /* Property List.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3840F87B1B6509DA0099A1AE /* Property List.plist */; };
+		3859516E1B78FD69007837A3 /* InfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3859516D1B78FD69007837A3 /* InfoManager.swift */; };
 		385EABE21B6E2E340050DCC6 /* PositionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385EABE11B6E2E340050DCC6 /* PositionButton.swift */; };
 		385EABE41B6E2EF00050DCC6 /* Shape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385EABE31B6E2EF00050DCC6 /* Shape.swift */; };
 		385F22101B6FABD100FCBEF9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 385F220F1B6FABD100FCBEF9 /* Images.xcassets */; };
+		385F22121B72761600FCBEF9 /* KeyShapeLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385F22111B72761600FCBEF9 /* KeyShapeLayer.swift */; };
+		385F22141B72763300FCBEF9 /* KeyImageLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385F22131B72763300FCBEF9 /* KeyImageLayer.swift */; };
+		385F22161B72765500FCBEF9 /* KeyTitleLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385F22151B72765500FCBEF9 /* KeyTitleLayer.swift */; };
+		386EB7691B80DA6700CABCE9 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386EB7681B80DA6700CABCE9 /* SwiftyJSON.swift */; };
 		38BA46031B669707007FB00E /* UIViewControllerPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA46021B669707007FB00E /* UIViewControllerPlay.swift */; };
+		38C43C791B82201900F1BE9D /* ViewControllerFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C43C781B82201900F1BE9D /* ViewControllerFunction.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3820D1A31B8397A0003E2AD1 /* Menu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
 		3833DD6E1B6CC90C00DD811E /* KeyBoardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyBoardButton.swift; sourceTree = "<group>"; };
 		3833DD701B6CC96300DD811E /* ShapeItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeItem.swift; sourceTree = "<group>"; };
 		3833DD721B6CC97600DD811E /* ColorItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorItem.swift; sourceTree = "<group>"; };
@@ -50,10 +58,16 @@
 		3840F8671B64B83D0099A1AE /* KeyBoardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyBoardTests.swift; sourceTree = "<group>"; };
 		3840F8731B64E3360099A1AE /* HomePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomePage.swift; sourceTree = "<group>"; };
 		3840F87B1B6509DA0099A1AE /* Property List.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Property List.plist"; sourceTree = "<group>"; };
+		3859516D1B78FD69007837A3 /* InfoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoManager.swift; sourceTree = "<group>"; };
 		385EABE11B6E2E340050DCC6 /* PositionButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PositionButton.swift; sourceTree = "<group>"; };
 		385EABE31B6E2EF00050DCC6 /* Shape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shape.swift; sourceTree = "<group>"; };
 		385F220F1B6FABD100FCBEF9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		385F22111B72761600FCBEF9 /* KeyShapeLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyShapeLayer.swift; sourceTree = "<group>"; };
+		385F22131B72763300FCBEF9 /* KeyImageLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyImageLayer.swift; sourceTree = "<group>"; };
+		385F22151B72765500FCBEF9 /* KeyTitleLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyTitleLayer.swift; sourceTree = "<group>"; };
+		386EB7681B80DA6700CABCE9 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		38BA46021B669707007FB00E /* UIViewControllerPlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerPlay.swift; sourceTree = "<group>"; };
+		38C43C781B82201900F1BE9D /* ViewControllerFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerFunction.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +109,7 @@
 		3840F84B1B64B83D0099A1AE /* KeyBoard */ = {
 			isa = PBXGroup;
 			children = (
+				386EB7681B80DA6700CABCE9 /* SwiftyJSON.swift */,
 				385F220F1B6FABD100FCBEF9 /* Images.xcassets */,
 				3840F87B1B6509DA0099A1AE /* Property List.plist */,
 				3840F84E1B64B83D0099A1AE /* AppDelegate.swift */,
@@ -110,6 +125,12 @@
 				3833DD721B6CC97600DD811E /* ColorItem.swift */,
 				385EABE11B6E2E340050DCC6 /* PositionButton.swift */,
 				385EABE31B6E2EF00050DCC6 /* Shape.swift */,
+				385F22111B72761600FCBEF9 /* KeyShapeLayer.swift */,
+				385F22131B72763300FCBEF9 /* KeyImageLayer.swift */,
+				385F22151B72765500FCBEF9 /* KeyTitleLayer.swift */,
+				3859516D1B78FD69007837A3 /* InfoManager.swift */,
+				38C43C781B82201900F1BE9D /* ViewControllerFunction.swift */,
+				3820D1A31B8397A0003E2AD1 /* Menu.swift */,
 			);
 			path = KeyBoard;
 			sourceTree = "<group>";
@@ -242,11 +263,18 @@
 			files = (
 				3833DD731B6CC97600DD811E /* ColorItem.swift in Sources */,
 				3840F8541B64B83D0099A1AE /* ViewController.swift in Sources */,
+				385F22121B72761600FCBEF9 /* KeyShapeLayer.swift in Sources */,
+				386EB7691B80DA6700CABCE9 /* SwiftyJSON.swift in Sources */,
+				3859516E1B78FD69007837A3 /* InfoManager.swift in Sources */,
+				385F22161B72765500FCBEF9 /* KeyTitleLayer.swift in Sources */,
 				385EABE21B6E2E340050DCC6 /* PositionButton.swift in Sources */,
 				3840F8521B64B83D0099A1AE /* KeyBoard.xcdatamodeld in Sources */,
 				3833DD6F1B6CC90C00DD811E /* KeyBoardButton.swift in Sources */,
 				385EABE41B6E2EF00050DCC6 /* Shape.swift in Sources */,
+				385F22141B72763300FCBEF9 /* KeyImageLayer.swift in Sources */,
 				3840F84F1B64B83D0099A1AE /* AppDelegate.swift in Sources */,
+				38C43C791B82201900F1BE9D /* ViewControllerFunction.swift in Sources */,
+				3820D1A41B8397A0003E2AD1 /* Menu.swift in Sources */,
 				3833DD711B6CC96300DD811E /* ShapeItem.swift in Sources */,
 				38BA46031B669707007FB00E /* UIViewControllerPlay.swift in Sources */,
 				3840F8741B64E3360099A1AE /* HomePage.swift in Sources */,
