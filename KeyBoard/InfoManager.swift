@@ -163,20 +163,18 @@ class InfoManager: NSObject {
         ]
 //        var temp = info["keys"].append()
         var tow = JSON(data: info.rawData(options: nil, error: nil)!)
-        tow["home"] = []
+//        tow["home"] = []
+        println("before remove: \(tow)")
+        tow.dictionaryObject?.removeValueForKey("subpage")
         println("the subpage : \(tow)")
         return info
     }
     
     static func setItems() {
         println("write appItem appInfo: \(appInfo)")
-        appInfo = initFirstData()
+//        appInfo = initFirstData()
+//        initFirstData()
         initPath()
-//        var temp: [AnyObject] = appInfo["home"] as! [AnyObject]
-//        println("\(temp)")
-//        appInfo["home"][0]["index"] = 2
-//        temp[1]["editable"] = 1
-//        var temp = appInfo["home"]["Signal"]
         println("the json data: \(appInfo)")
         var data: NSData! = appInfo!.rawData()
         println("json data: \(data)")
@@ -212,11 +210,13 @@ class InfoManager: NSObject {
     
     static func getSubpageInformation(pageName page: String) -> JSON {
         initData()
+        println("in get subpage\(appInfo)")
         return appInfo!["subpage"][page] as JSON
     }
     
     static func setSubpageInformation(pageName page: String, info subpageInformation: JSON) {
         appInfo!["subpage"][page] = subpageInformation
+        println("in set subpage \(appInfo)")
+        setItems()
     }
-    
 }

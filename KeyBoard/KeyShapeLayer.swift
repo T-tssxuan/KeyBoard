@@ -15,7 +15,7 @@ class KeyShapeLayer: CALayer {
     override func drawInContext(ctx: CGContext!) {
 //        CGContextSaveGState(ctx)
         println("\(frame)")
-        CGContextSetFillColorWithColor(ctx, key.buttonBackgroundColor)
+        CGContextSetFillColorWithColor(ctx, ColorItem.getCGColor(index: key.buttonBackgroundColor))
         CGContextSetStrokeColorWithColor(ctx, key.buttonFrameColor)
         CGContextSetLineWidth(ctx, 1)
         let path: CGPathRef = Shape.getPath(shapeCategory: key.shapeCategory, frame: frame)

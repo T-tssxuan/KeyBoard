@@ -18,7 +18,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(setStatusBarBackgroundView())
-        InfoManager.setItems()
+//        InfoManager.setItems()
         InfoManager.getItems()
         InfoManager.setItems()
         home =  HomePage()
@@ -26,6 +26,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         collectionView.delegate = self
         collectionView.dataSource = self
         view.addSubview(collectionView)
+//        NetworkManager.sharedInstance.connect(host: "192.168.1.22", remotePort: 3001)
+        NetworkManager.sharedInstance.send(msg: "hello world")
 //        InfoManager.appInfoInit()
     }
 
@@ -74,8 +76,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             let pageTitle: String = item["title"].stringValue
             println("subpage info: \(pageTitle)")
             let pageInfo = InfoManager.getSubpageInformation(pageName: pageTitle)
-            self.presentViewController(UIViewControllerPlay(pageInfo: pageInfo), animated: true, completion: nil)
+            self.presentViewController(UIViewControllerPlay(pageInfo: pageInfo, name: pageTitle), animated: true, completion: nil)
         }
+//        NetworkManager.sharedInstance.send(msg: "abc")
         println("the deselect index is: \(indexPath.row)")
     }
     
