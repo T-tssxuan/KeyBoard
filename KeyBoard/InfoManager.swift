@@ -48,6 +48,7 @@ class InfoManager: NSObject {
     
     static func initFirstData() -> JSON {
         var info: JSON = [
+            "ip": "127.0.0.1",
             "home":
             [
                 [
@@ -161,16 +162,14 @@ class InfoManager: NSObject {
 
             ]
         ]
-//        var temp = info["keys"].append()
-        var tow = JSON(data: info.rawData(options: nil, error: nil)!)
-//        tow["home"] = []
-        println("before remove: \(tow)")
-        tow.dictionaryObject?.removeValueForKey("subpage")
-        println("the subpage : \(tow)")
+//        var tow = JSON(data: info.rawData(options: nil, error: nil)!)
+//        println("before remove: \(tow)")
+//        tow.dictionaryObject?.removeValueForKey("subpage")
+//        println("the subpage : \(tow)")
         return info
     }
     
-    static func setItems() {
+    static func saveItems() {
         println("write appItem appInfo: \(appInfo)")
 //        appInfo = initFirstData()
 //        initFirstData()
@@ -198,9 +197,19 @@ class InfoManager: NSObject {
         appInfo!["home"] = homeSeting
     }
     
+    static func getHomeSettingAtIndex(index: Int) -> JSON {
+        initData()
+        return appInfo!["home"][index] as JSON
+    }
+    
+    static func setHomeSettingAtIndex(index: Int, info homeInfo: JSON) {
+        appInfo!["home"][index] = homeInfo
+    }
+    
     static func addHomeSetting(#homeSeting: JSON) {
         let length = appInfo!["home"].count
-        appInfo!["home"][length] = homeSeting
+        appInfo!["home"][length] = appInfo!["home"][length - 1]
+        appInfo!["home"][length - 1] = homeSeting
     }
     
     static func getHomeItemInformation(index pageIndex: Int) -> JSON{
@@ -217,6 +226,16 @@ class InfoManager: NSObject {
     static func setSubpageInformation(pageName page: String, info subpageInformation: JSON) {
         appInfo!["subpage"][page] = subpageInformation
         println("in set subpage \(appInfo)")
-        setItems()
+        saveItems()
+    }
+    
+    static func getIPInfo() -> String {
+        initData()
+        return appInfo!["ip"].stringValue
+    }
+    
+    static func setIPInfo(#ip: String) {
+        appInfo!["ip"].string = ip
+        saveItems()
     }
 }

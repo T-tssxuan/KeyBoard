@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		381237631B98325C00EE60C9 /* KeyBoardKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381237621B98325C00EE60C9 /* KeyBoardKeys.swift */; };
+		381237651B98A9A600EE60C9 /* NetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381237641B98A9A600EE60C9 /* NetworkViewController.swift */; };
 		3820D1A41B8397A0003E2AD1 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3820D1A31B8397A0003E2AD1 /* Menu.swift */; };
 		3833DD6F1B6CC90C00DD811E /* KeyBoardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3833DD6E1B6CC90C00DD811E /* KeyBoardButton.swift */; };
 		3833DD711B6CC96300DD811E /* ShapeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3833DD701B6CC96300DD811E /* ShapeItem.swift */; };
@@ -43,6 +45,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		381237621B98325C00EE60C9 /* KeyBoardKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyBoardKeys.swift; sourceTree = "<group>"; };
+		381237641B98A9A600EE60C9 /* NetworkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkViewController.swift; sourceTree = "<group>"; };
 		3820D1A31B8397A0003E2AD1 /* Menu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
 		3833DD6E1B6CC90C00DD811E /* KeyBoardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyBoardButton.swift; sourceTree = "<group>"; };
 		3833DD701B6CC96300DD811E /* ShapeItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeItem.swift; sourceTree = "<group>"; };
@@ -134,6 +138,8 @@
 				38C43C781B82201900F1BE9D /* ViewControllerFunction.swift */,
 				3820D1A31B8397A0003E2AD1 /* Menu.swift */,
 				38BC7C0D1B878B88002FAE0D /* NetworkManager.swift */,
+				381237621B98325C00EE60C9 /* KeyBoardKeys.swift */,
+				381237641B98A9A600EE60C9 /* NetworkViewController.swift */,
 			);
 			path = KeyBoard;
 			sourceTree = "<group>";
@@ -267,8 +273,10 @@
 				38BC7C0E1B878B88002FAE0D /* NetworkManager.swift in Sources */,
 				3833DD731B6CC97600DD811E /* ColorItem.swift in Sources */,
 				3840F8541B64B83D0099A1AE /* ViewController.swift in Sources */,
+				381237651B98A9A600EE60C9 /* NetworkViewController.swift in Sources */,
 				385F22121B72761600FCBEF9 /* KeyShapeLayer.swift in Sources */,
 				386EB7691B80DA6700CABCE9 /* SwiftyJSON.swift in Sources */,
+				381237631B98325C00EE60C9 /* KeyBoardKeys.swift in Sources */,
 				3859516E1B78FD69007837A3 /* InfoManager.swift in Sources */,
 				385F22161B72765500FCBEF9 /* KeyTitleLayer.swift in Sources */,
 				385EABE21B6E2E340050DCC6 /* PositionButton.swift in Sources */,

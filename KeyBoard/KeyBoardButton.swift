@@ -47,9 +47,11 @@ class KeyBoardButton: UIControl{
         }
     }
     
-    var actualFrame: CGRect = CGRectZero
+//    var actualFrame: CGRect = CGRectZero
+    var actualCenter: CGPoint = CGPointZero
     
-    var editingFrame: CGRect = CGRectZero
+//    var editingFrame: CGRect = CGRectZero
+    var editingCenter: CGPoint = CGPointZero
     
     var buttonFunction: String! = "A" {
         didSet {
@@ -72,8 +74,8 @@ class KeyBoardButton: UIControl{
     init(frame: CGRect, host: UIViewControllerPlay) {
         super.init(frame: frame)
         
-        actualFrame = frame
-        editingFrame = frame
+        actualCenter = center
+        editingCenter = center
         
         hostPlay = host
         
@@ -99,8 +101,8 @@ class KeyBoardButton: UIControl{
         titleLayer.contentsScale = UIScreen.mainScreen().scale
         layer.addSublayer(titleLayer)
         
-        var tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "tap:")
-        self.addGestureRecognizer(tap)
+//        var tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "tap:")
+//        self.addGestureRecognizer(tap)
         var pan: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "pan:")
         self.addGestureRecognizer(pan)
         
@@ -116,31 +118,24 @@ class KeyBoardButton: UIControl{
             self.center = CGPointMake(center.x + point.x, center.y + point.y)
             println("frame \(frame)")
             temp.setTranslation(CGPointZero, inView: temp.view)
+            actualCenter = center
         }
     }
     
-    func tap(temp: UITapGestureRecognizer) {
-        if hostPlay.playStatus != 0 {
-            if hostPlay.playStatus == 2 {
-                hostPlay.editKey(customKey: self)
-            } else if hostPlay.playStatus == 3 {
-                hostPlay.deleteKey(customKey: self)
-            }
-        }
-    }
+//    func tap(temp: UITapGestureRecognizer) {
+//        if hostPlay.playStatus != 0 {
+//            if hostPlay.playStatus == 2 {
+//                hostPlay.editKey(customKey: self)
+//            } else if hostPlay.playStatus == 3 {
+//                hostPlay.deleteKey(customKey: self)
+//            }
+//        }
+//    }
     
     func touchDown(item: UIControl) {
-        if !isEditing {
-            NetworkManager.sharedInstance.send(msg: buttonFunction + ",000")
-            println("button touch down")
-        }
     }
     
     func touchUp(item: UIControl) {
-        if !isEditing {
-            NetworkManager.sharedInstance.send(msg: buttonFunction + ",111")
-            println("button touch up")
-        }
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -172,6 +167,28 @@ class KeyBoardButton: UIControl{
             return nil
         }
     }
+    
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        if !isEditing {
+            NetworkManager.sharedInstance.send(msg: buttonFunction + ",000")
+            println("button touch down")
+        }
+    }
+    
+    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+        if hostPlay.playStatus != 0 {
+            if hostPlay.playStatus == 2 {
+                hostPlay.editKey(customKey: self)
+            } else if hostPlay.playStatus == 3 {
+                hostPlay.deleteKey(customKey: self)
+            }
+        }
+        if !isEditing {
+            NetworkManager.sharedInstance.send(msg: buttonFunction + ",111")
+            println("button touch up")
+        }
+
+    }
 
     func setShape(#shape: Int) {
         shapeCategory = ShapeCategory(rawValue: shape % ShapeCategory.count)!
@@ -190,10 +207,10 @@ class KeyBoardButton: UIControl{
     
     func updateButtonInfo() {
         buttonInfo = [
-            "x": actualFrame.origin.x,
-            "y": actualFrame.origin.y,
-            "width": actualFrame.width,
-            "height": actualFrame.height,
+            "x": actualCenter.x - frame.width / 2,
+            "y": actualCenter.y - frame.height / 2,
+            "width": frame.width,
+            "height": frame.height,
             "shape": shapeCategory.rawValue,
             "color": buttonBackgroundColor,
             "title": buttonTitle,
@@ -206,8 +223,6 @@ class KeyBoardButton: UIControl{
         if let info = settingInfo {
             buttonInfo = info
         }
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
         
         frame = CGRect(
             x: buttonInfo["x"].intValue,
@@ -216,7 +231,10 @@ class KeyBoardButton: UIControl{
             height: buttonInfo["height"].intValue
         )
         
-        actualFrame = frame
+        actualCenter = center
+        
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         
         shapeCategory =  ShapeCategory.getCategory(index: buttonInfo["shape"].intValue)
         buttonBackgroundColor = buttonInfo["color"].intValue
@@ -229,13 +247,19 @@ class KeyBoardButton: UIControl{
     
     func fromEditingPositionToActualPosition() {
         UIView.animateWithDuration(0.5, animations: { () -> Void in
-            self.frame = self.actualFrame
+            self.center = self.actualCenter
         })
     }
     
     func fromActualPositionToEditingPosition() {
         UIView.animateWithDuration(0.5, animations: { () -> Void in
-            self.frame = self.editingFrame
+            self.center = self.editingCenter
+        })
+    }
+    
+    func updateTransition(newInfo info: JSON) {
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            self.setButtonInfo(info: info)
         })
     }
     

@@ -40,6 +40,10 @@ class HomePage:NSObject {
         print("nothing")
     }
     
+    func updateHomeInfo() {
+        homeInfo = InfoManager.getHomeSetting()
+    }
+    
     func getHomeView() -> UICollectionView! {
         return homeCollectionView
     }
@@ -47,6 +51,7 @@ class HomePage:NSObject {
     func getCellAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = homeCollectionView.dequeueReusableCellWithReuseIdentifier("HomePageCell", forIndexPath: indexPath) as! UICollectionViewCell
         cell.backgroundColor = ColorItem.getColor(index: indexPath.row)
+        cell.contentView.subviews.map{ $0.removeFromSuperview() }
         cell.contentView.addSubview(getCellContentViewAtIndexPath(
             cellIndexPath: indexPath,
             cellSize: CGSize(width: cell.frame.width, height: cell.frame.height))
@@ -86,7 +91,7 @@ class HomePage:NSObject {
         }
         println("homeinfo : \(indexPath.row)")
         if (indexPath.row != homeInfo.count - 1) {
-//            println("homeinfo : \(indexPath.row)")
+            println("homeinfo : \( homeInfo[indexPath.row + 1])")
             imageName = homeInfo[indexPath.row + 1]["image"].string!
             textContent = homeInfo[indexPath.row + 1]["title"].string!
         } else {

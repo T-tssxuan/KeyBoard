@@ -31,6 +31,9 @@ class ColorItem: UIView {
         9: UIColor(red: 40 / 256, green: 165 / 256, blue: 207 / 256, alpha: 1)
     ]
 
+    static let cellEditColorMap = [
+        
+    ]
     
     static func getColor(#index: Int) -> UIColor {
         return colorMap[index % colorMap.count]!

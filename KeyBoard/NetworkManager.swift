@@ -15,6 +15,9 @@ class NetworkManager: NSObject, NSStreamDelegate {
     var inputStrean: NSInputStream?
     var timer: NSTimer?
     var timerThread: NSThread?
+    
+    var tryCount: Int = 0
+    
     var netWorkStatus: Bool = false {
         didSet {
             if netWorkStatus {
@@ -36,15 +39,33 @@ class NetworkManager: NSObject, NSStreamDelegate {
         let unsafePointerOfN = (msg as NSString).UTF8String
         let len: Int = Int(strlen(unsafePointerOfN))
         println("\(len)")
-        outputStream?.write(UnsafeMutablePointer(unsafePointerOfN), maxLength: len)
+        if netWorkStatus {
+            outputStream?.write(UnsafeMutablePointer(unsafePointerOfN), maxLength: len)
+        }
     }
     
-    func connect(#host: String, remotePort port: UInt32) {
+    func connect() {
+        // increase the connect try time
+        
+        if netWorkStatus {
+            return
+        }
+        
+        tryCount += 1
+        
+        NetworkManager.sharedInstance.disconnect()
+        var arr: [String] = split(InfoManager.getIPInfo(), maxSplit: Int.max, allowEmptySlices: true) { $0 == ","}
+        let host = arr[0]
+//        let port = UInt32(arr[1].toInt()!)
+        let port: UInt32 = 3001
+        
         CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault, host as CFString, port, nil, &writeStream)
         outputStream = writeStream!.takeRetainedValue()
         outputStream!.delegate = self
         outputStream!.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
-        self.outputStream?.open()
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+            self.outputStream!.open()
+        })
 //        NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "hearBeat:", userInfo: nil, repeats: true)
     }
     
@@ -59,26 +80,37 @@ class NetworkManager: NSObject, NSStreamDelegate {
     }
     
     func disconnect() {
-        
+        self.outputStream?.close()
     }
     
     func stream(aStream: NSStream, handleEvent aStreamEvent: NSStreamEvent) {
+        let note = NSNotificationCenter.defaultCenter()
         switch aStreamEvent {
         case NSStreamEvent.OpenCompleted:
-            println("open")
+            println("network open")
             netWorkStatus = true
+            // reset the connect try count
+            tryCount = 0
+            note.postNotificationName("network_info", object: self, userInfo: ["status": "connected"])
         case NSStreamEvent.HasBytesAvailable:
-            println("has bytes available")
+            println("network has bytes available")
         case NSStreamEvent.HasSpaceAvailable:
-            println("has space availiable")
+            println("network has space availiable")
         case NSStreamEvent.ErrorOccurred:
-            println("has error occured")
+            println("network has error occured")
+            if tryCount < 3 {
+                connect()
+            } else {
+                disconnect()
+            }
+            note.postNotificationName("network_info", object: self, userInfo: ["status": "error", "try_count": String(tryCount)])
             netWorkStatus = false
         case NSStreamEvent.EndEncountered:
-            println("end encounterd")
+            println("network end encounterd")
+            note.postNotificationName("network_info", object: self, userInfo: ["status": "disconnected"])
             netWorkStatus = false
         default:
-            println("others")
+            println("network others")
             netWorkStatus = false
         }
     }

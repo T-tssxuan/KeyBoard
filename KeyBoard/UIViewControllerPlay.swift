@@ -10,7 +10,7 @@
 import UIKit
 import QuartzCore
 
-class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UITableViewDataSource, UITableViewDelegate {
     var shapeBar: UICollectionView!
     var colorBar: UICollectionView!
     var shapeLabel: UILabel!
@@ -32,9 +32,16 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
     var titleAlertController: UIAlertController!
     var BackgroundImageConfigureButton: UIButton!
     
+    var functionSettingTextField: UITextField!
+    var functionAutoCompleteTableView: UITableView!
+    var functionPrefixKeys: [String]!
+    var functionPrefixKeysNum: Int!
+    
+    var mouseModeStatus: Bool!
+    
     var menu: Menu!
     
-    var customingKeyBoardButton: KeyBoardButton!
+    var customingKeyBoardButton: KeyBoardButton! = nil
     
     var editCover: UIView!
     
@@ -50,7 +57,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
     var playStatus: UInt = 0 // 0 normal, 1 add, 2 edit, 3 delete
 
     
-    init(pageInfo: JSON, name pageName: String) {
+    init(pageInfo: JSON, name pageName: String, mouse mouseSatus: Bool) {
         self.pageName = pageName
         orientation = pageInfo["orientation"].int
         println("the pageinfo: \(pageInfo)")
@@ -61,6 +68,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
             blue: CGFloat(pageInfo["backgroundcolor"][2].floatValue),
             alpha: CGFloat(pageInfo["backgroundcolor"][3].floatValue)
         )
+        mouseModeStatus = mouseSatus
         println("before super")
         super.init(nibName: nil, bundle: nil)
         println("after super")
@@ -71,9 +79,6 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
     }
 
     override func viewDidLoad() {
-//        var tap = UITapGestureRecognizer(target: self, action: "handleTap:")
-//        tap.numberOfTapsRequired = 2
-//        view.addGestureRecognizer(tap)
         view.backgroundColor = backgroundColor
         loadKeyBoardButtons()
         
@@ -96,6 +101,11 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
         setGobackButton()
         setOKButton()
         
+        if mouseModeStatus != nil && mouseModeStatus! {
+            let gesture: UIGestureRecognizer = UIPanGestureRecognizer(target: self, action: "mouseMove:")
+            view.addGestureRecognizer(gesture)
+        }
+        
         playMode()
         
         setMenu()
@@ -110,12 +120,12 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
         // Dispose of any resources that can be recreated.
     }
     
-    func handleTap(sender: UITapGestureRecognizer) {
-        if configureHidden {
-            editMode(newButton: true)
+    func mouseMove(sender: UIPanGestureRecognizer) {
+        if playStatus == 0 {
+            var point: CGPoint = sender.translationInView(sender.view!)
+            println("the mouse pointer \(point)")
+            sender.setTranslation(CGPointZero, inView: sender.view)
         }
-        
-        println("configureHidden \(configureHidden)")
     }
     
     override func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation {
@@ -213,6 +223,12 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
     
     func menuSettingTapped(sender: UIButton) {
         println("tap the menu setting button")
+        if configureHidden {
+            editMode(newButton: false)
+            playStatus = 3
+        } else {
+            playStatus = 0
+        }
     }
 
     
@@ -461,15 +477,31 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
         )
         
         functionAlertController.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
+            self.functionSettingTextField = textField
             textField.placeholder = "function"
+            textField.addTarget(self, action: "uialertTextFieldEditingBegin:", forControlEvents:UIControlEvents.EditingDidBegin)
+            textField.addTarget(self, action: "uialertTextFieldEditingChange:", forControlEvents: UIControlEvents.EditingChanged)
+            textField.addTarget(self, action: "uialertTextFieldEditingEnd:", forControlEvents: UIControlEvents.EditingDidEnd)
         }
         
         let confirmAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (paramAction: UIAlertAction!) in
             if let textFields = self.functionAlertController?.textFields {
                 let theTextField = textFields as! [UITextField]
                 var temp: String! = theTextField[0].text as String
-                if let match = temp.rangeOfString( "^([^,]+\\,(.+\\,)*){0,1}[^,]+$", options: NSStringCompareOptions.RegularExpressionSearch){
+                if let match = temp.rangeOfString( "^([^,]+\\,(.+\\,)*){0,1}+$", options: NSStringCompareOptions.RegularExpressionSearch){
                     self.customingKeyBoardButton.buttonFunction = theTextField[0].text
+                    var error:NSError?
+                    let regex: NSRegularExpression = NSRegularExpression(
+                        pattern: ",$",
+                        options: NSRegularExpressionOptions.CaseInsensitive,
+                        error: &error
+                    )!
+                    temp = regex.stringByReplacingMatchesInString(
+                        temp,
+                        options: NSMatchingOptions.WithoutAnchoringBounds,
+                        range: NSRange(location: 0, length: count(temp)),
+                        withTemplate: ""
+                    )
                     self.functionLabel.text = temp.stringByReplacingOccurrencesOfString(",", withString: " + ")
                 } else {
                     println("error format")
@@ -485,7 +517,46 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
         
         functionAlertController.addAction(confirmAction)
         functionAlertController.addAction(cancelAction)
-
+        
+        // data for autocomplete table
+        functionPrefixKeys = KeyBoardKeys.getKeys(prefix: "")
+        functionPrefixKeysNum = KeyBoardKeys.getKeysNum(prefix: "")
+        
+        // init the auto complete tableView
+        functionAutoCompleteTableView = UITableView()
+        functionAutoCompleteTableView.dataSource = self
+        functionAutoCompleteTableView.delegate = self
+        let identifier = "table_view_cell"
+        functionAutoCompleteTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: identifier)
+    }
+    
+    func uialertTextFieldEditingBegin(sender: UITextField) {
+        println("the uialert textfield begin editing.")
+        println("the function configure frame: \(sender.frame)")
+        let rect = sender.convertRect(sender.frame, toView: functionAlertController.view)
+//        let point = sender.frame.origin
+        println("the point to the screen \(rect)")
+        functionAutoCompleteTableView.frame = CGRect(
+            x: rect.origin.x,
+            y: rect.origin.y + rect.height,
+            width: sender.frame.width,
+            height: 100)
+        println("the auto complete tableview frame \(functionAutoCompleteTableView.frame)")
+        functionAlertController.view.addSubview(functionAutoCompleteTableView)
+    }
+    
+    func uialertTextFieldEditingChange(sender: UITextField) {
+        functionAutoCompleteTableView.hidden = false
+        functionPrefixKeys = KeyBoardKeys.getKeys(prefix: sender.text)
+        functionPrefixKeysNum = KeyBoardKeys.getKeysNum(prefix: sender.text)
+        if functionPrefixKeysNum == 0 {
+            functionAutoCompleteTableView.hidden = true
+        }
+        functionAutoCompleteTableView.reloadData()
+    }
+    
+    func uialertTextFieldEditingEnd(sender: UITextField) {
+        println("the uialert textfield is ended")
     }
     
     func setTitleConfigureButton() {
@@ -627,51 +698,7 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
         customingKeyBoardButton.shapeCategory = ShapeCategory.Heart
         customingKeyBoardButton.buttonBackgroundImage = "default"
         self.view.addSubview(customingKeyBoardButton)
-    }
-    
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView === shapeBar {
-            return 10
-        } else {
-            return 9
-        }
-    }
-    
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        if collectionView === shapeBar {
-            let cell = shapeBar.dequeueReusableCellWithReuseIdentifier("shapeBar", forIndexPath: indexPath) as! UICollectionViewCell
-//            cell.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
-            var content: ShapeItem = ShapeItem(
-                frame:CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height),
-                viewShape: indexPath.row
-            )
-            cell.contentView.addSubview(content)
-            return cell
-        } else {
-            let cell = colorBar.dequeueReusableCellWithReuseIdentifier("colorBar", forIndexPath: indexPath) as! UICollectionViewCell
-            cell.backgroundColor = ColorItem.getColor(index: indexPath.row)
-            return cell
-        }
-    }
-    
-    func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        println("high light \(indexPath.row)")
-        return true
-    }
-    
-    func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        println("select item \(indexPath.row)")
-        return true
-    }
-    
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        if collectionView === shapeBar {
-            customingKeyBoardButton.shapeCategory = ShapeCategory(rawValue: indexPath.row % ShapeCategory.count)
-            println("shape bar click")
-        } else if collectionView === colorBar {
-            customingKeyBoardButton.buttonBackgroundColor = indexPath.row
-            println("color bar click")
-        }
+//        self.view.insertSubview(customingKeyBoardButton, belowSubview: editCover)
     }
     
     func customButtonSizeChange(slider: UISlider) {
@@ -696,39 +723,60 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
     func clickBack(button: UIButton) {
 //        self.dismissViewControllerAnimated(true, completion: nil)
         playMode()
-        customingKeyBoardButton.removeFromSuperview()
-        customingKeyBoardButton = nil
+        if customingKeyBoardButton != nil {
+            customingKeyBoardButton.removeFromSuperview()
+            customingKeyBoardButton = nil
+        }
     }
     
     func clickOk(button: UIButton) {
         println("\(nameLabel.text)")
-        customingKeyBoardButton.updateButtonInfo()
-        buttonsInfo[customingKeyBoardButton.buttonTitle] = customingKeyBoardButton.buttonInfo
-        if let keyButton = customButtons[customingKeyBoardButton.buttonTitle] {
-            keyButton.setButtonInfo(info: customingKeyBoardButton.buttonInfo)
-            customingKeyBoardButton.removeFromSuperview()
-            customingKeyBoardButton = nil
-        } else {
-            customingKeyBoardButton.setButtonInfo(info: nil)
-            customButtons[customingKeyBoardButton.buttonTitle] = customingKeyBoardButton
-            customingKeyBoardButton = nil
+        if (playStatus == 1 || playStatus == 2) && customingKeyBoardButton != nil {
+            customingKeyBoardButton.updateButtonInfo()
+            buttonsInfo[customingKeyBoardButton.buttonTitle] = customingKeyBoardButton.buttonInfo
+            if let keyButton = customButtons[customingKeyBoardButton.buttonTitle] {
+                //            keyButton.setButtonInfo(info: customingKeyBoardButton.buttonInfo)
+                keyButton.updateTransition(newInfo: customingKeyBoardButton.buttonInfo)
+                customingKeyBoardButton.removeFromSuperview()
+                customingKeyBoardButton = nil
+            } else {
+                customingKeyBoardButton.setButtonInfo(info: nil)
+                let btn: KeyBoardButton = KeyBoardButton(frame: CGRectZero, host: self)
+                btn.setButtonInfo(info: customingKeyBoardButton.buttonInfo)
+                customingKeyBoardButton.removeFromSuperview()
+                customingKeyBoardButton = nil
+                self.view.insertSubview(btn, belowSubview: editCover)
+                customButtons[btn.buttonTitle] = btn
+            }
         }
         playMode()
     }
     
     func clickFunction(button: UIButton) {
+        if customingKeyBoardButton == nil {
+            return
+        }
         self.presentViewController(functionAlertController, animated: true, completion: nil)
     }
     
     func clickImage(button: UIButton) {
-        
+        if customingKeyBoardButton == nil {
+            return
+        }
     }
     
     func clickTitle(button: UIButton) {
+        if customingKeyBoardButton == nil {
+            return
+        }
         self.presentViewController(titleAlertController, animated: true, completion: nil)
     }
     
     func clickPosition(button: UIButton) {
+        if customingKeyBoardButton == nil {
+            return
+        }
+        
         if configureHidden {
             showAllConfigureItem()
             customingKeyBoardButton.moveable = false
@@ -827,9 +875,92 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func editKey(customKey key: KeyBoardButton) {
+        editCover.hidden = false
         setCustomingKeyBoardBuuton()
+        var tempFrame = customingKeyBoardButton.frame
         customingKeyBoardButton.setButtonInfo(info: key.buttonInfo)
         customingKeyBoardButton.updateButtonInfo()
+        customingKeyBoardButton.fromActualPositionToEditingPosition()
     }
+    
+    
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if collectionView === shapeBar {
+            return 10
+        } else {
+            return 9
+        }
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        if collectionView === shapeBar {
+            let cell = shapeBar.dequeueReusableCellWithReuseIdentifier("shapeBar", forIndexPath: indexPath) as! UICollectionViewCell
+            //            cell.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+            var content: ShapeItem = ShapeItem(
+                frame:CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height),
+                viewShape: indexPath.row
+            )
+            cell.contentView.addSubview(content)
+            return cell
+        } else {
+            let cell = colorBar.dequeueReusableCellWithReuseIdentifier("colorBar", forIndexPath: indexPath) as! UICollectionViewCell
+            cell.backgroundColor = ColorItem.getColor(index: indexPath.row)
+            return cell
+        }
+    }
+    
+    func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+        println("high light \(indexPath.row)")
+        return true
+    }
+    
+    func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+        println("select item \(indexPath.row)")
+        return true
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        if collectionView === shapeBar {
+            customingKeyBoardButton.shapeCategory = ShapeCategory(rawValue: indexPath.row % ShapeCategory.count)
+            println("shape bar click")
+        } else if collectionView === colorBar {
+            customingKeyBoardButton.buttonBackgroundColor = indexPath.row
+            println("color bar click")
+        }
+    }
+
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        println("the function table select \(functionPrefixKeys[indexPath.row]) \(count(functionPrefixKeys[indexPath.row]))")
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        var str: String = functionPrefixKeys[indexPath.row] + ","
+        var re = ""
+        if KeyBoardKeys.getValidPrefix(functionSettingTextField.text) == "" {
+            re = functionSettingTextField.text + str
+        } else {
+            var err: NSError?
+            let regex: NSRegularExpression = NSRegularExpression(pattern: "[a-z]+$", options: NSRegularExpressionOptions.CaseInsensitive, error: &err)!
+            re = regex.stringByReplacingMatchesInString(
+                functionSettingTextField.text,
+                options: NSMatchingOptions.WithoutAnchoringBounds,
+                range: NSMakeRange(0, count(functionSettingTextField.text)),
+                withTemplate: str
+            )
+        }
+        println("the result of replace \(re)")
+        functionSettingTextField.text = re
+        tableView.hidden = true
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let identifier = "table_view_cell"
+        let cell:UITableViewCell = tableView.dequeueReusableCellWithIdentifier(identifier, forIndexPath: indexPath) as! UITableViewCell
+        cell.textLabel!.text = functionPrefixKeys[indexPath.row]
+        return cell
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return functionPrefixKeysNum
+    }
+    
 }
 
