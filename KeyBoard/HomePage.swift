@@ -90,14 +90,9 @@ class HomePage:NSObject {
             textContent = "Add New"
         }
         println("homeinfo : \(indexPath.row)")
-        if (indexPath.row != homeInfo.count - 1) {
-            println("homeinfo : \( homeInfo[indexPath.row + 1])")
-            imageName = homeInfo[indexPath.row + 1]["image"].string!
-            textContent = homeInfo[indexPath.row + 1]["title"].string!
-        } else {
-            imageName = homeInfo[0]["image"].string!
-            textContent = homeInfo[0]["title"].string!
-        }
+        println("homeinfo : \( homeInfo[indexPath.row + 1])")
+        imageName = homeInfo[indexPath.row]["image"].string!
+        textContent = homeInfo[indexPath.row]["title"].string!
         
         image = UIImage(named: imageName)!
         imageView = UIImageView(image: image)

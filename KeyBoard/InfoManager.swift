@@ -52,22 +52,14 @@ class InfoManager: NSObject {
             "home":
             [
                 [
-                    "index": 0,
-                    "backgroundcolor": 0,
-                    "title": "Add New",
-                    "image": "Add",
-                    "editable": false,
-                    "function": 1,
-                    "subpage": ""
-                ],
-                [
                     "index": 1,
                     "backgroundcolor": 1,
                     "title": "Signal",
                     "image": "Signal",
                     "editable": false,
                     "function": 0,
-                    "subpage": ""
+                    "subpage": "",
+                    "mouse": 0
                 ],
                 [
                     "index": 1,
@@ -77,6 +69,7 @@ class InfoManager: NSObject {
                     "editable": false,
                     "function": 0,
                     "subpage": "keyboard",
+                    "mouse": 0
                 ],
                 [
                     "index": 2,
@@ -86,6 +79,7 @@ class InfoManager: NSObject {
                     "editable": false,
                     "function": 0,
                     "subpage": "handle",
+                    "mouse": 0
                 ],
                 [
                     "index": 3,
@@ -95,7 +89,18 @@ class InfoManager: NSObject {
                     "editable": false,
                     "function": 0,
                     "subpage": "mouse",
+                    "mouse": 1
                 ],
+                [
+                    "index": 0,
+                    "backgroundcolor": 0,
+                    "title": "Add New",
+                    "image": "Add",
+                    "editable": false,
+                    "function": 1,
+                    "subpage": "",
+                    "mouse": 0
+                ]
             ],
             "subpage":
             [
@@ -171,7 +176,7 @@ class InfoManager: NSObject {
     
     static func saveItems() {
         println("write appItem appInfo: \(appInfo)")
-//        appInfo = initFirstData()
+        appInfo = initFirstData()
 //        initFirstData()
         initPath()
         println("the json data: \(appInfo)")
@@ -194,6 +199,7 @@ class InfoManager: NSObject {
     }
     
     static func setHomeSetting(#homeSeting: JSON) {
+        println("the home setting \(homeSeting)")
         appInfo!["home"] = homeSeting
     }
     
@@ -203,7 +209,13 @@ class InfoManager: NSObject {
     }
     
     static func setHomeSettingAtIndex(index: Int, info homeInfo: JSON) {
+        println("app info before set: \(appInfo)")
+        var oldTitle: String = appInfo!["home"][index]["title"].stringValue
+        appInfo!["subpage"][homeInfo["title"].stringValue] = appInfo!["subpage"][oldTitle]
+        appInfo!["subpage"].dictionaryObject!.removeValueForKey(oldTitle)
         appInfo!["home"][index] = homeInfo
+        println("app info after set: \(appInfo)")
+        
     }
     
     static func addHomeSetting(#homeSeting: JSON) {
