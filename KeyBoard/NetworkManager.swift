@@ -15,7 +15,7 @@ class NetworkManager: NSObject, NSStreamDelegate {
     var inputStrean: NSInputStream?
     var timer: NSTimer?
     var timerThread: NSThread?
-    
+    var networkSwitch: Bool = true
     var tryCount: Int = 0
     
     var netWorkStatus: Bool = false {
@@ -35,13 +35,27 @@ class NetworkManager: NSObject, NSStreamDelegate {
     static var sharedInstance = NetworkManager()
     
     func send(#msg: String) {
-        println("NetworkManager send \(msg)")
-        let unsafePointerOfN = (msg as NSString).UTF8String
+        var info = alignRight(msg, totalLength: 30, pad: "-")
+        println("NetworkManager send \(msg) \(info)")
+        let unsafePointerOfN = (info as NSString).UTF8String
         let len: Int = Int(strlen(unsafePointerOfN))
         println("\(len)")
         if netWorkStatus {
-            outputStream?.write(UnsafeMutablePointer(unsafePointerOfN), maxLength: len)
+            let a = outputStream?.write(UnsafeMutablePointer(unsafePointerOfN), maxLength: len)
+            println("the send result \(a)")
         }
+    }
+    
+    func alignRight(var string: String, totalLength: Int, pad: Character) -> String {
+        let amountToPad = totalLength - count(string)
+        if amountToPad < 1 {
+            return string
+        }
+        let padString = String(pad)
+        for _ in 1...amountToPad {
+            string = string + String(pad)
+        }
+        return string
     }
     
     func connect() {
@@ -51,9 +65,10 @@ class NetworkManager: NSObject, NSStreamDelegate {
             return
         }
         
+        networkSwitch = true
         tryCount += 1
-        
-        NetworkManager.sharedInstance.disconnect()
+        NSNotificationCenter.defaultCenter().postNotificationName("network_info", object: self, userInfo: ["status": "error", "try_count": String(tryCount)])
+//        NetworkManager.sharedInstance.disconnect()
         var arr: [String] = split(InfoManager.getIPInfo(), maxSplit: Int.max, allowEmptySlices: true) { $0 == ","}
         let host = arr[0]
 //        let port = UInt32(arr[1].toInt()!)
@@ -80,6 +95,8 @@ class NetworkManager: NSObject, NSStreamDelegate {
     }
     
     func disconnect() {
+        networkSwitch = false
+        tryCount = 0
         self.outputStream?.close()
     }
     
@@ -98,14 +115,16 @@ class NetworkManager: NSObject, NSStreamDelegate {
             println("network has space availiable")
         case NSStreamEvent.ErrorOccurred:
             println("network has error occured")
-            if tryCount < 3 {
+            netWorkStatus = false
+            if tryCount < 3 && networkSwitch {
                 connect()
             } else {
+                note.postNotificationName("network_info", object: self, userInfo: ["status": "disconnected"])
                 disconnect()
             }
-            note.postNotificationName("network_info", object: self, userInfo: ["status": "error", "try_count": String(tryCount)])
             netWorkStatus = false
         case NSStreamEvent.EndEncountered:
+            netWorkStatus = false
             println("network end encounterd")
             note.postNotificationName("network_info", object: self, userInfo: ["status": "disconnected"])
             netWorkStatus = false

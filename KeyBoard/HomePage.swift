@@ -13,6 +13,9 @@ class HomePage:NSObject {
 
     var homeCollectionView: UICollectionView!
     var homeInfo: JSON = InfoManager.getHomeSetting()
+    var gallery: UICollectionView!
+    var template: UICollectionView!
+    var templateInfo: JSON = InfoManager.getCellTemplate()["home"]
     
     override init(){
         super.init()
@@ -52,16 +55,18 @@ class HomePage:NSObject {
         let cell = homeCollectionView.dequeueReusableCellWithReuseIdentifier("HomePageCell", forIndexPath: indexPath) as! UICollectionViewCell
         cell.backgroundColor = ColorItem.getColor(index: indexPath.row)
         cell.contentView.subviews.map{ $0.removeFromSuperview() }
-        cell.contentView.addSubview(getCellContentViewAtIndexPath(
-            cellIndexPath: indexPath,
-            cellSize: CGSize(width: cell.frame.width, height: cell.frame.height))
+        cell.contentView.addSubview(
+            getCellContentViewAtIndexPath(
+                cellIndexPath: indexPath,
+                cellSize: CGSize(width: cell.frame.width, height: cell.frame.height),
+                source: homeInfo
+            )
         )
         
         return cell
-
     }
     
-    func getCellContentViewAtIndexPath(cellIndexPath indexPath: NSIndexPath, cellSize size: CGSize)->UIView{
+    func getCellContentViewAtIndexPath(cellIndexPath indexPath: NSIndexPath, cellSize size: CGSize, source info: JSON)->UIView{
         var contentView: UIView!
         var label: UILabel!
         var image: UIImage!
@@ -69,30 +74,12 @@ class HomePage:NSObject {
         var imageName: String = "KeyBoard"
         var textContent: String = "KeyBoard"
         contentView = UIView(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        if indexPath.row == 0 {
-            imageName = "Signal"
-            textContent = "Signal"
-        }
-        if indexPath.row == 1 {
-            imageName = "KeyBoard"
-            textContent = "KeyBoard"
-        }
-        if indexPath.row == 2 {
-            imageName = "Handle"
-            textContent = "Handle"
-        }
-        if indexPath.row == 3 {
-            imageName = "Mouse"
-            textContent = "Mouse"
-        }
-        if indexPath.row == 7{
-            imageName = "Add"
-            textContent = "Add New"
-        }
+        
         println("homeinfo : \(indexPath.row)")
-        println("homeinfo : \( homeInfo[indexPath.row + 1])")
-        imageName = homeInfo[indexPath.row]["image"].string!
-        textContent = homeInfo[indexPath.row]["title"].string!
+        println("homeinfo : \( info[indexPath.row])")
+        println("homeinfo : \(info)")
+        imageName = info[indexPath.row]["image"].string!
+        textContent = info[indexPath.row]["title"].string!
         
         image = UIImage(named: imageName)!
         imageView = UIImageView(image: image)
@@ -100,9 +87,8 @@ class HomePage:NSObject {
         imageView.frame = CGRect(x: size.width * 2 / 7, y: size.height / 7, width: size.width * rate, height: size.height * rate)
         contentView.addSubview(imageView)
         label = UILabel(frame: CGRect(x: size.width * 4 / 14, y: size.height * 3 / 7, width: size.width * rate, height: size.height * rate))
-        
         label.text = textContent
-        label.font = UIFont(name: "Arial Black", size: 25)
+//        label.font = UIFont(name: "Arial Black", size: 25)
         label.textColor = UIColor.whiteColor()
         label.sizeThatFits(CGSize(width: label.frame.width, height: label.frame.height))
         label.textAlignment = NSTextAlignment.Center
@@ -110,6 +96,62 @@ class HomePage:NSObject {
         return contentView
     }
     
+    func getGalleryView(#width: CGFloat, galleryFrame frame: CGRect) -> UICollectionView {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(
+            width: width,
+            height: width
+        )
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
+        gallery = UICollectionView(frame: frame, collectionViewLayout: layout)
+        gallery.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "galleryCell")
+        return gallery
+    }
+    
+    func getGalleryCellAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = gallery.dequeueReusableCellWithReuseIdentifier("galleryCell", forIndexPath: indexPath) as! UICollectionViewCell
+        cell.backgroundColor = ColorItem.getColor(index: indexPath.row)
+        cell.contentView.subviews.map{ $0.removeFromSuperview() }
+        println("\(InfoManager.getFunctionIconAtIdex(index: indexPath.row))")
+        let image: UIImage = UIImage(named: InfoManager.getFunctionIconAtIdex(index: indexPath.row))!
+        let imageView: UIImageView = UIImageView(frame: cell.contentView.frame)
+        imageView.image = image
+        
+        cell.contentView.addSubview(imageView)
+        
+        return cell
+    }
+    
+    func getTemplateView(#width: CGFloat, templateFrame frame: CGRect) -> UICollectionView {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(
+            width: width,
+            height: width
+        )
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        
+        template = UICollectionView(frame: frame, collectionViewLayout: layout)
+        template.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "templateCell")
+        return template
+    }
+    
+    func getTemplateAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = template.dequeueReusableCellWithReuseIdentifier("templateCell", forIndexPath: indexPath) as! UICollectionViewCell
+        cell.backgroundColor = ColorItem.getColor(index: indexPath.row)
+        cell.contentView.subviews.map{ $0.removeFromSuperview() }
+        cell.addSubview(
+            getCellContentViewAtIndexPath(
+                cellIndexPath: indexPath,
+                cellSize: CGSize(width: cell.frame.width, height: cell.frame.height),
+                source: templateInfo
+            )
+        )
+        return cell
+    }
 
 }

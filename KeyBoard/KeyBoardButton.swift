@@ -170,7 +170,7 @@ class KeyBoardButton: UIControl{
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         if !isEditing {
-            NetworkManager.sharedInstance.send(msg: buttonFunction + ",000")
+            NetworkManager.sharedInstance.send(msg: buttonFunction)
             println("button touch down")
         }
     }
@@ -183,10 +183,10 @@ class KeyBoardButton: UIControl{
                 hostPlay.deleteKey(customKey: self)
             }
         }
-        if !isEditing {
-            NetworkManager.sharedInstance.send(msg: buttonFunction + ",111")
-            println("button touch up")
-        }
+//        if !isEditing {
+//            NetworkManager.sharedInstance.send(msg: buttonFunction)
+//            println("button touch up")
+//        }
 
     }
 

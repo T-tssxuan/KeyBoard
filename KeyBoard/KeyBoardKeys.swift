@@ -10,6 +10,7 @@ import UIKit
 
 class KeyBoardKeys: NSObject {
     static let keys: [String] = [
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
         "A", "AbntC1", "AbntC2", "Add", "Apps", "Attn", "B", "Back", "BrowserBack", "BrowserFavorites",
         "BrowserForward", "BrowserHome", "BrowserRefresh", "BrowserSearch", "BrowserStop", "C", "Cancel", "Capital", "CapsLock", "Clear",
         "CrSel", "D", "D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7",

@@ -14,6 +14,30 @@ class InfoManager: NSObject {
     static var appInfo: JSON? = nil
     static var documentsDirectoryPath: String!
     static var configuration: String = "configuration"
+
+    static let homeSetingDefault: JSON = [
+        "index": 0,
+        "backgroundcolor": 0,
+        "title": "New",
+        "image": "KeyBoard",
+        "editable": false,
+        "function": 1,
+        "subpage": "",
+        "mouse": 0
+    ]
+    
+    static let subpageSetingDefault: JSON = [
+        "backgroundcolor": [0.2, 0.3, 0.5, 1],
+        "orientation": 0,
+        "keys": []
+    ]
+    
+    static let functionIconSet: [String] = [
+        "Mouse",
+        "KeyBoard",
+        "Handle",
+        "Signal"
+    ]
     
     static func initPath() {
         if documentsDirectoryPath == nil {
@@ -52,7 +76,7 @@ class InfoManager: NSObject {
             "home":
             [
                 [
-                    "index": 1,
+                    "index": 0,
                     "backgroundcolor": 1,
                     "title": "Signal",
                     "image": "Signal",
@@ -92,7 +116,7 @@ class InfoManager: NSObject {
                     "mouse": 1
                 ],
                 [
-                    "index": 0,
+                    "index": 4,
                     "backgroundcolor": 0,
                     "title": "Add New",
                     "image": "Add",
@@ -176,7 +200,7 @@ class InfoManager: NSObject {
     
     static func saveItems() {
         println("write appItem appInfo: \(appInfo)")
-        appInfo = initFirstData()
+//        appInfo = initFirstData()
 //        initFirstData()
         initPath()
         println("the json data: \(appInfo)")
@@ -208,20 +232,44 @@ class InfoManager: NSObject {
         return appInfo!["home"][index] as JSON
     }
     
-    static func setHomeSettingAtIndex(index: Int, info homeInfo: JSON) {
-        println("app info before set: \(appInfo)")
+    static func removeHomeSettingAtIndex(index: Int) {
         var oldTitle: String = appInfo!["home"][index]["title"].stringValue
-        appInfo!["subpage"][homeInfo["title"].stringValue] = appInfo!["subpage"][oldTitle]
+        appInfo!["home"].arrayObject?.removeAtIndex(index)
         appInfo!["subpage"].dictionaryObject!.removeValueForKey(oldTitle)
-        appInfo!["home"][index] = homeInfo
-        println("app info after set: \(appInfo)")
-        
+        println("\(appInfo!)")
     }
     
-    static func addHomeSetting(#homeSeting: JSON) {
+    static func setHomeSettingAtIndex(index: Int, info homeInfo: JSON) {
+        var oldTitle: String = appInfo!["home"][index]["title"].stringValue
+        if oldTitle != homeInfo["title"].stringValue {
+            appInfo!["subpage"][homeInfo["title"].stringValue] = appInfo!["subpage"][oldTitle]
+            appInfo!["subpage"].dictionaryObject!.removeValueForKey(oldTitle)
+        }
+        appInfo!["home"][index] = homeInfo
+    }
+    
+    static func addHomeSetting(index: Int) {
+        println("app info before set: \(appInfo)")
         let length = appInfo!["home"].count
+        
+        let title = SystemInfomation.cellTemplate["home"][index]["title"].string
+        var newHomeSeting: JSON = SystemInfomation.cellTemplate["home"][index]
+        var newSubpageSeting: JSON = SystemInfomation.cellTemplate["subpage"][title!]
+        
+        var index = length
+        var newTitle: String = newHomeSeting["title"].stringValue + String(index)
+        while (appInfo!["subpage"][newTitle] != nil) {
+            index += 1
+            newTitle = newHomeSeting["title"].stringValue + String(index)
+        }
+        newHomeSeting["title"].string = newTitle
+        println(appInfo!["home"])
+        appInfo!["home"].arrayObject?.append([])
         appInfo!["home"][length] = appInfo!["home"][length - 1]
-        appInfo!["home"][length - 1] = homeSeting
+        appInfo!["home"][length - 1] = newHomeSeting
+        println(appInfo!["home"])
+        appInfo!["subpage"][newHomeSeting["title"].stringValue] = newSubpageSeting
+        println("app info after set: \(appInfo)")
     }
     
     static func getHomeItemInformation(index pageIndex: Int) -> JSON{
@@ -229,6 +277,7 @@ class InfoManager: NSObject {
         return appInfo!["home"][pageIndex]
     }
     
+    // for the subpathe info
     static func getSubpageInformation(pageName page: String) -> JSON {
         initData()
         println("in get subpage\(appInfo)")
@@ -241,6 +290,7 @@ class InfoManager: NSObject {
         saveItems()
     }
     
+    // for the ip info
     static func getIPInfo() -> String {
         initData()
         return appInfo!["ip"].stringValue
@@ -249,5 +299,19 @@ class InfoManager: NSObject {
     static func setIPInfo(#ip: String) {
         appInfo!["ip"].string = ip
         saveItems()
+    }
+    
+    // for set the homepage cell icon
+    static func getFunctionIconNumer() -> Int {
+        return functionIconSet.count
+    }
+    
+    static func getFunctionIconAtIdex(#index: Int) -> String {
+        return functionIconSet[index]
+    }
+    
+    // for the homepage cell template
+    static func getCellTemplate() -> JSON {
+        return SystemInfomation.cellTemplate
     }
 }

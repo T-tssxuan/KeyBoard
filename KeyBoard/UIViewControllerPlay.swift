@@ -10,7 +10,7 @@
 import UIKit
 import QuartzCore
 
-class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UITableViewDataSource, UITableViewDelegate {
+class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate {
     var shapeBar: UICollectionView!
     var colorBar: UICollectionView!
     var shapeLabel: UILabel!
@@ -102,8 +102,24 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
         setOKButton()
         
         if mouseModeStatus != nil && mouseModeStatus! {
-            let gesture: UIGestureRecognizer = UIPanGestureRecognizer(target: self, action: "mouseMove:")
-            view.addGestureRecognizer(gesture)
+            let mouseMove: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "mouseMove:")
+            mouseMove.minimumNumberOfTouches = 1
+            mouseMove.maximumNumberOfTouches = 1
+            view.addGestureRecognizer(mouseMove)
+            let mouseScroll: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "MouseScroll:")
+            mouseScroll.minimumNumberOfTouches = 2
+            mouseScroll.maximumNumberOfTouches = 2
+            view.addGestureRecognizer(mouseScroll)
+            let leftTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "mouseLeftTap:")
+            leftTap.numberOfTapsRequired = 1
+            leftTap.numberOfTouchesRequired = 1
+            leftTap.delegate = self
+            view.addGestureRecognizer(leftTap)
+            let rightTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "mouseRightTap:")
+            rightTap.numberOfTouchesRequired = 2
+            rightTap.numberOfTapsRequired = 1
+            rightTap.delegate = self
+            view.addGestureRecognizer(rightTap)
         }
         
         playMode()
@@ -120,11 +136,46 @@ class UIViewControllerPlay: UIViewController, UICollectionViewDataSource, UIColl
         // Dispose of any resources that can be recreated.
     }
     
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+        let location = touch.locationInView(view)
+        println("the touch location \(location)")
+        for subView in view.subviews {
+            if subView.isKindOfClass(UIView.self) && !(subView as! UIView).hidden && CGRectContainsPoint(subView.frame, location) {
+                return false
+            }
+        }
+        return true
+    }
+    
     func mouseMove(sender: UIPanGestureRecognizer) {
         if playStatus == 0 {
             var point: CGPoint = sender.translationInView(sender.view!)
-            println("the mouse pointer \(point)")
+            let sendInfo: String = "mouse," + String(Int(Float(point.x)) * 2) + "," + String(Int(Float(point.y)) * 2) + ","
+            NetworkManager.sharedInstance.send(msg: sendInfo)
+            println("the mouse pointer \(sendInfo)")
             sender.setTranslation(CGPointZero, inView: sender.view)
+        }
+    }
+    
+    func MouseScroll(sender: UIPanGestureRecognizer) {
+        if playStatus == 0 {
+            var point: CGPoint = sender.translationInView(sender.view!)
+            let sendInfo: String = "mouseKey,3," + String(Int(Float(point.y)) * 3) + ","
+            NetworkManager.sharedInstance.send(msg: sendInfo)
+            println("the mouse pointer \(sendInfo)")
+            sender.setTranslation(CGPointZero, inView: sender.view)
+        }
+    }
+    
+    func mouseLeftTap(sender: UITapGestureRecognizer) {
+        if playStatus == 0 {
+            NetworkManager.sharedInstance.send(msg: "mouseKey,1,")
+        }
+    }
+    
+    func mouseRightTap(sender: UITapGestureRecognizer) {
+        if playStatus == 0 {
+            NetworkManager.sharedInstance.send(msg: "mouseKey,2,")
         }
     }
     
